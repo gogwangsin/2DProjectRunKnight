@@ -18,7 +18,7 @@ screen_height = 800
 
 open_canvas(screen_width, screen_height)
 
-background_image = load_image("background.png")
+background_image = load_image("BackGround\\road_background.png")
 background_image.draw(screen_width // 2 , screen_height // 2)
 update_canvas()
 
