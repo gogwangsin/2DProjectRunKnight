@@ -1,7 +1,7 @@
-
 from pico2d import *
 
 import game_world
+from GUI import GUI
 from kingdom import KingDom
 from knight import Knight
 
@@ -11,9 +11,9 @@ def handle_event():
     events = get_events()
 
     for event in events:
-        if event.type == SDL_QUIT: # 나가기 클릭
+        if event.type == SDL_QUIT:  # 나가기 클릭
             running = False
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE: # ESC키 나가기
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:  # ESC키 나가기
             running = False
         else:
             knight.handle_event(event)
@@ -24,15 +24,19 @@ def create_world():
     global kingdom
     global knight
     global enemy
+    global gui
 
     running = True
 
     # 레이어 규칙 : 나중 레이어가 덮는다 ( 0 < 1 )
     kingdom = KingDom(screen_width, screen_height)
-    game_world.add_object(kingdom, 0) # 제일 먼저
+    game_world.add_object(kingdom, 0)  # 제일 먼저
 
     knight = Knight()
-    game_world.add_object(knight, 1) # 두번째 레이어
+    game_world.add_object(knight, 1)  # 두번째 레이어
+
+    gui = GUI(knight)
+    game_world.add_object(gui, 2)
 
 
 def open_screen():
@@ -53,7 +57,6 @@ def render_world():
     clear_canvas()
     game_world.render()
     update_canvas()
-
 
 
 open_screen()
