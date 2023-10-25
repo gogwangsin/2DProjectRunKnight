@@ -1,4 +1,5 @@
 from pico2d import load_image
+
 # HP 클래스
 
 
@@ -19,15 +20,15 @@ class HP:
         self.draw_x, self.draw_y = 640, 750 # 그릴 피봇 -> 스크린 크기 ( 1280, 800 )
 
     def update(self):
-        # if self.scale_factor >= 0:
-        if self.scale_factor >= 0:
-            self.scale_factor -= 0.0005
-        else:
-            self.scale_factor = 1.0
-        self.draw_size_width = 657 * self.scale_factor  #
+        self.scale_factor = self.knight.get_hp() / 100 # 현재체력 / 최대체력 -> 비율
+        self.draw_size_width = 657 * self.scale_factor  # 그릴 길이 x 체력비율 매핑
 
         self.draw_x = 640 - (self.image_size_width - self.draw_size_width) / 2
-        print('용사 체력 :', self.knight.get_hp()) # hp에 따라 길이 조절 -> scale_factor 수정
+        print('용사 체력 :', self.knight.get_hp()) # hp에 따라 길이 조절 -> scale_factor 수정\
+
+        if( self.knight.get_hp() == 0):
+            print('HP 0')
+            running = False
         pass
 
     def draw(self):
