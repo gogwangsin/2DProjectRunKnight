@@ -1,38 +1,25 @@
 from pico2d import load_image, get_time
-import global_variable
+import global_var
 
 # 용사 객체
 
 class Knight:
     def __init__(self):
-        self.image = load_image("Object\\KnightSprite.png")
-
-        self.image_size_width = 146
-        self.image_size_height = 241  # 한개 사진 크기
-
-        self.draw_size_width = 146 * 1.1  # 원본 1.2배
-        self.draw_size_height = 241 * 1.1  # 사진 그릴 크기 [ 비율 조정 ]
-
-        self.draw_x, self.draw_y = 250, 400
-
-        self.frame = 0
-        self.action = 0  # 0 걷기, 1 찌르기 2, 점프 공격
-        self.HP = 100
-
-        self.last_frame_update_time = get_time()
-        self.update_frame_time = 0.08  # 프레임 업데이트 시간 간격 : 0.8 -> 스크롤 속도에 영향 받음
+        self.init_knight_var()
 
     def update(self):
 
         if self.get_time_gap() > self.update_frame_time:
-            self.frame = (self.frame + 1) % 3
+            self.knight_frame = (self.knight_frame + 1) % 3
             self.last_frame_update_time = get_time()
 
-        self.HP -= 0.25
-        if self.HP < 0:
-            self.HP = 100
+        self.knight_HP -= 0.25
+        if self.knight_HP <= 0:
+            print('용사 사망')
+            global_var.running = False
+            return
 
-        global_variable.scroll_speed -= 0.05
+        # global_var.scroll_speed = 0
 
 
     def get_time_gap(self):
@@ -42,18 +29,29 @@ class Knight:
         pass
 
     def draw(self):
-        self.image.clip_draw(self.frame * self.image_size_width, self.action * self.image_size_height,
-                             self.image_size_width, self.image_size_height, self.draw_x, self.draw_y,
-                             self.draw_size_width, self.draw_size_height)
-
-        # self.image.clip_draw(0, 0, self.image_size_width, self.image_size_height,
-        # self.draw_x, self.draw_y, self.draw_size_width, self.draw_size_height)
-
-        # 사진 픽셀 시작 위치 (왼쪽 하단 0,0) / 사진 크기 / 그릴 위치(사진 중앙이 pivot) // 그릴 크기 조정 1280, 720
-        # 프레임 x 사진 한개 가로, 액션 x 사진 한개 세로 : 사진 픽셀 왼쪽 하단
-        # 사진 가로 크기(한개), 사진 세로 크기(한개), 그릴 위치 임의로 300,400 [변수임]
-        # 그릴 사진 크기[ 배수로 비율 늘림 ] 1.2배
+        self.knight_image.clip_draw(self.knight_frame * self.knight_width, self.knight_action * self.knight_height,
+                                    self.knight_width, self.knight_height, self.knight_draw_x, self.knight_draw_y,
+                                    self.knight_draw_width, self.knight_draw_height)
 
 
-    def get_hp(self):
-        return self.HP
+    def get_current_HP(self):
+        return self.knight_HP
+
+
+    def init_knight_var(self):
+        self.knight_image = load_image("Object\\KnightSprite.png")
+
+        self.knight_width = 146
+        self.knight_height = 241  # 한개 사진 크기
+
+        self.knight_draw_width = 146 * 1.1  # 원본 1.2배
+        self.knight_draw_height = 241 * 1.1  # 사진 그릴 크기 [ 비율 조정 ]
+
+        self.knight_draw_x, self.knight_draw_y = 250, 400
+
+        self.knight_frame = 0
+        self.knight_action = 0  # 0 걷기, 1 찌르기 2, 점프 공격
+        self.knight_HP = 100
+
+        self.last_frame_update_time = get_time()
+        self.update_frame_time = 0.08  # 프레임 업데이트 시간 간격 : 0.8 -> 스크롤 속도에 영향 받음
