@@ -1,4 +1,5 @@
 from pico2d import load_image
+import global_variable
 # 왕성 길
 
 
@@ -18,17 +19,17 @@ class KingDom:
         self.draw_x = self.screen_width // 2  # 사진 그릴 위치 (x,y)
         self.draw_y = self.screen_height // 2 - 45  # 사진 비율 조정으로 인한 y 조절
 
-        self.speed = scroll_speed
+        # self.speed = scroll_speed
 
     def draw(self):
-        self.image.clip_draw(0, 0, self.image_size_width, self.image_size_height,
+        self.image.clip_draw(0, 0, self.image_size_width, self.image_size_height, # 왕성 사진 1
                              self.draw_x, self.draw_y, self.draw_size_width, self.draw_size_height)
 
-        self.image.clip_draw(0, 0, self.image_size_width, self.image_size_height,
+        self.image.clip_draw(0, 0, self.image_size_width, self.image_size_height, # 왕성 사진 2
                              self.draw_x + self.image_size_width, self.draw_y,
                              self.draw_size_width, self.draw_size_height)
 
-        self.image.clip_draw(0, 0, self.image_size_width, self.image_size_height,
+        self.image.clip_draw(0, 0, self.image_size_width, self.image_size_height, # 왕성 사진 3
                              self.draw_x + self.image_size_width + self.image_size_width, self.draw_y,
                              self.draw_size_width, self.draw_size_height)
 
@@ -36,7 +37,7 @@ class KingDom:
         # (0,0, 1280, 574, drawX,drawY, 1280, 720)
 
     def update(self):
-        self.draw_x -= self.speed
+        self.draw_x -= global_variable.scroll_speed
         if self.draw_x < -self.image_size_width:
             self.draw_x = 0
 

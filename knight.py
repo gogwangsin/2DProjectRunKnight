@@ -1,4 +1,6 @@
 from pico2d import load_image, get_time
+import global_variable
+
 # 용사 객체
 
 class Knight:
@@ -8,8 +10,8 @@ class Knight:
         self.image_size_width = 146
         self.image_size_height = 241  # 한개 사진 크기
 
-        self.draw_size_width = 146 * 1.2  # 원본 1.2배
-        self.draw_size_height = 241 * 1.2  # 사진 그릴 크기 [ 비율 조정 ]
+        self.draw_size_width = 146 * 1.1  # 원본 1.2배
+        self.draw_size_height = 241 * 1.1  # 사진 그릴 크기 [ 비율 조정 ]
 
         self.draw_x, self.draw_y = 250, 400
 
@@ -21,9 +23,17 @@ class Knight:
         self.update_frame_time = 0.08  # 프레임 업데이트 시간 간격 : 0.8 -> 스크롤 속도에 영향 받음
 
     def update(self):
+
         if self.get_time_gap() > self.update_frame_time:
             self.frame = (self.frame + 1) % 3
             self.last_frame_update_time = get_time()
+
+        self.HP -= 0.25
+        if self.HP < 0:
+            self.HP = 100
+
+        global_variable.scroll_speed -= 0.05
+
 
     def get_time_gap(self):
         return get_time() - self.last_frame_update_time
