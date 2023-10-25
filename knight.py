@@ -1,55 +1,71 @@
 from pico2d import load_image, get_time
 import global_var
 
+
 # 용사 객체
 
-class Idle:
-    @staticmethod # 함수를 그룹핑 하는 역할
-    def do():
-        print('Idle Doing')
-        pass
-
+class Walk:
     @staticmethod
-    def entry():
+    def entry(knight, event):
         print('Idle Entry Action')
-        pass
+        knight.frame = 0
+        knight.action = 0  # 0 걷기, 1 찌르기 2, 점프 공격
+
+        knight.last_frame_time = get_time()
+        knight.update_frame_time = 0.065  # 프레임 업데이트 시간 간격 : 0.8 -> 스크롤 속도에 영향 받음 : 0.08
+
+    @staticmethod  # 함수를 그룹핑 하는 역할
+    def do(knight):
+        print('Idle Doing')
+        if get_time() - knight.last_frame_time > knight.update_frame_time:
+            knight.frame = (knight.frame + 1) % 3
+            knight.last_frame_time = get_time()
 
     @staticmethod
-    def exit():
+    def exit(knight, event):
         print('Idle Exit Action')
         pass
 
-#==========================================================
+    @staticmethod
+    def draw(knight):  # frame, action, 사진 가로,세로, x,y, 크기 비율
+        knight.knight_image.clip_draw(knight.frame * knight.knight_width,
+                                      knight.action * knight.knight_height,
+                                      knight.knight_width, knight.knight_height,
+                                      knight.knight_draw_x, knight.knight_draw_y,
+                                      knight.knight_draw_width, knight.knight_draw_height)
+
+
+# ==========================================================
 class StateMachine:
-    def __init__(self):
-        self.cur_state = Idle
+    def __init__(self, knight):
+        self.knight = knight
+        self.cur_state = Walk
         pass
 
     def start(self):
-        self.cur_state.entry() # entry action
-        pass
+        self.cur_state.entry(self.knight, ('START', 0))
+        # entry action : key == START, event값 0으로 전달
 
     def update(self):
-        self.cur_state.do()
+        self.cur_state.do(self.knight)
         pass
 
     def draw(self):
+        self.cur_state.draw(self.knight)
+        pass
+
+    def handle_event(self):
         pass
 
 
-#==========================================================
+# ==========================================================
 class Knight:
     def __init__(self):
         self.init_knight_var()
         self.init_state_machine()
 
     def update(self):
-
         self.state_machine.update()
-
-        if self.get_time_gap() > self.update_frame_time:
-            self.knight_frame = (self.knight_frame + 1) % 3
-            self.last_frame_update_time = get_time()
 
         self.knight_HP -= 0.25
         if self.knight_HP <= 0:
@@ -61,12 +77,10 @@ class Knight:
         # global_var.scroll_speed = 0
 
     def draw(self):
-        self.knight_image.clip_draw(self.knight_frame * self.knight_width, self.knight_action * self.knight_height,
-                                    self.knight_width, self.knight_height, self.knight_draw_x, self.knight_draw_y,
-                                    self.knight_draw_width, self.knight_draw_height)
+        self.state_machine.draw()
 
     def handle_event(self, event):
-        pass
+        self.state_machine.handle_event()
 
     def init_knight_var(self):
         self.knight_image = load_image("Object\\KnightSprite.png")
@@ -79,22 +93,11 @@ class Knight:
 
         self.knight_draw_x, self.knight_draw_y = 250, 400
 
-        self.knight_frame = 0
-        self.knight_action = 0  # 0 걷기, 1 찌르기 2, 점프 공격
         self.knight_HP = 100
 
-        self.last_frame_update_time = get_time()
-        self.update_frame_time = 0.065  # 프레임 업데이트 시간 간격 : 0.8 -> 스크롤 속도에 영향 받음 : 0.08
-
-
     def init_state_machine(self):
-        self.state_machine = StateMachine()
+        self.state_machine = StateMachine(self)
         self.state_machine.start()
-
-    def get_time_gap(self):
-        return get_time() - self.last_frame_update_time
 
     def get_current_HP(self):
         return self.knight_HP
-
-
