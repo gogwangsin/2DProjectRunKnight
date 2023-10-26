@@ -23,6 +23,7 @@ def right_up(event):
 
 
 class Walk:
+
     @staticmethod
     def entry(knight, event):
         print('Walk Entry Action')
@@ -45,7 +46,9 @@ class Walk:
         if get_time() - knight.last_frame_time > knight.update_frame_time:
             knight.frame = (knight.frame + 1) % 3
             knight.last_frame_time = get_time()
-        knight.knight_draw_y += knight.Dir * 6.5
+
+        if knight.draw_y + knight.Dir * 6.5 <= 700 and knight.draw_y + knight.Dir * 6.5 >= 80:
+            knight.draw_y += knight.Dir * 6.5
 
     @staticmethod
     def exit(knight, event):
@@ -57,7 +60,7 @@ class Walk:
         knight.knight_image.clip_draw(knight.frame * knight.knight_width,
                                       knight.action * knight.knight_height,
                                       knight.knight_width, knight.knight_height,
-                                      knight.knight_draw_x, knight.knight_draw_y,
+                                      knight.draw_x, knight.draw_y,
                                       knight.knight_draw_width, knight.knight_draw_height)
 
 
@@ -124,7 +127,7 @@ class Knight:
         self.knight_draw_width = 146 * 1.1  # 원본 1.2배
         self.knight_draw_height = 241 * 1.1  # 사진 그릴 크기 [ 비율 조정 ]
 
-        self.knight_draw_x, self.knight_draw_y = 250, 400
+        self.draw_x, self.draw_y = 250, 400
 
         self.frame = 0
         self.HP = 100
