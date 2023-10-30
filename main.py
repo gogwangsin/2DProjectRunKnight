@@ -4,6 +4,7 @@ import game_world
 import global_var
 
 from GUI import GUI
+from enemy_crown import EnemyCrown
 from kingdom import KingDom
 from knight import Knight
 
@@ -33,8 +34,13 @@ def create_world():
     knight = Knight()
     game_world.add_object(knight, 1)
 
+    enemy = EnemyCrown()
+    game_world.add_object(enemy, 1)
+
     gui = GUI(knight)
     game_world.add_object(gui, 2)
+
+
 
 
 def open_screen():
@@ -56,35 +62,41 @@ def render_world():
     update_canvas()
 
 
-def WaitToStart():
+# ==========================================================
+
+
+def wait_to_start():
     open_screen()
     # 게임 시작 대기 씬 -> 실행 중 한번만 실행
-    create_world()
     # 이벤트 발생하면 시작
-    pass
+    create_world()
+    print('객체가 생성되었습니다!')
 
-def GameOverScene():
+
+def game_over_scene():
     if True == global_var.running:
         return
-    ResetWorld()
-    create_world()
+    # reset_world()
+    # create_world()
     # 이벤트에 따라 종료할지 다시할지
-def ResetWorld():
+
+
+def reset_world():
     for sublist in game_world.objects:
         sublist.clear()
     print('모든 객체가 소멸되었습니다!')
-    pass
 
-def GameLoop():
+
+def game_loop():
     while global_var.running:
         handle_event()
         update_world()
         render_world()
-        GameOverScene()
+        game_over_scene()
         delay(0.01)
 
 
-WaitToStart()
-GameLoop()
-ResetWorld()
+wait_to_start()
+game_loop()
+reset_world()
 close_canvas()
