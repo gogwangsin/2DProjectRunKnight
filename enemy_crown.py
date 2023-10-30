@@ -9,9 +9,10 @@ class Run:
         print('Run Entry Action')
         # 키 flag : 한번 눌렀을 때 방향 정해짐
         crown.Dir = -1
+        crown.speed = 2
 
         crown.last_frame_time = get_time()
-        crown.update_frame_time = 0.085  # 프레임 업데이트 시간 간격 : 0.8 -> 스크롤 속도에 영향 받음 : 0.08
+        crown.update_frame_time = 0.2  # 프레임 업데이트 시간 간격 : 0.8 -> 스크롤 속도에 영향 받음 : 0.08
 
     @staticmethod
     def exit(crown, event):
@@ -24,15 +25,15 @@ class Run:
             crown.frame = (crown.frame + 1) % 4
             crown.last_frame_time = get_time()
 
-        crown.draw_x += crown.Dir * global_var.scroll_speed
+        crown.draw_x += crown.Dir * (global_var.scroll_speed + crown.speed)
 
     @staticmethod
     def draw(crown):  # frame, action, 사진 가로,세로, x,y, 크기 비율
-        crown.crown_image.clip_draw(crown.frame * crown.crown_width,
-                                     crown.action * crown.crown_height,
-                                     crown.crown_width, crown.crown_height,
-                                     crown.draw_x, crown.draw_y,
-                                     crown.crown_draw_width, crown.crown_draw_height)
+        crown.image.clip_draw(crown.frame * crown.image_width,
+                              crown.action * crown.image_height,
+                              crown.image_width, crown.image_height,
+                              crown.draw_x, crown.draw_y,
+                              crown.draw_width, crown.draw_height)
 
 
 class StateMachine:
@@ -40,11 +41,6 @@ class StateMachine:
         self.crown = crown
         self.cur_state = Run
         # 상태 전환 테이블
-        # self.transitions = {
-        # 
-        #     Run: {left_down: Run, left_up: Run, right_down: Run, right_up: Run}
-        # 
-        # }
         pass
 
     def start(self):
@@ -60,7 +56,7 @@ class StateMachine:
         pass
 
     def handle_event(self, event):
-        pass        
+        pass
         # for check_event, next_state in self.transitions[self.cur_state].items():
         #     if check_event(event):
         #         self.cur_state.exit(self.knight, event)
@@ -68,6 +64,7 @@ class StateMachine:
         #         self.cur_state.entry(self.knight, event)
         #         return True
         # return False
+
 
 class EnemyCrown:
     def __init__(self):
@@ -78,7 +75,6 @@ class EnemyCrown:
         self.state_machine.update()
         self.update_hp()
 
-
     def draw(self):
         self.state_machine.draw()
 
@@ -86,13 +82,13 @@ class EnemyCrown:
         self.state_machine.handle_event(('INPUT', event))  # 입력 이벤트
 
     def init_crown_var(self):
-        self.crown_image = load_image("Object\\enemy_crown_axe.png")
+        self.image = load_image("Object\\enemy_crown_axe.png")
 
-        self.crown_width = 515
-        self.crown_height = 452  # 한개 사진 크기
+        self.image_width = 515
+        self.image_height = 452  # 한개 사진 크기
 
-        self.crown_draw_width = 515 * 1.1  # 원본 1.2배
-        self.crown_draw_height = 452 * 1.1  # 사진 그릴 크기 [ 비율 조정 ]
+        self.draw_width = 515 * 0.25  # 원본 1/4배
+        self.draw_height = 452 * 0.25  # 사진 그릴 크기 [ 비율 조정 ]
 
         self.draw_x, self.draw_y = 1200, 400
 
