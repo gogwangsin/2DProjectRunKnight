@@ -1,0 +1,112 @@
+from pico2d import load_image, get_time
+import global_var
+
+
+class Run:
+
+    @staticmethod
+    def entry(crown, event):
+        print('Run Entry Action')
+        # 키 flag : 한번 눌렀을 때 방향 정해짐
+        crown.Dir = -1
+
+        crown.last_frame_time = get_time()
+        crown.update_frame_time = 0.085  # 프레임 업데이트 시간 간격 : 0.8 -> 스크롤 속도에 영향 받음 : 0.08
+
+    @staticmethod
+    def exit(crown, event):
+        print('Walk Exit Action')
+        pass
+
+    @staticmethod  # 함수를 그룹핑 하는 역할
+    def do(crown):
+        if get_time() - crown.last_frame_time > crown.update_frame_time:
+            crown.frame = (crown.frame + 1) % 4
+            crown.last_frame_time = get_time()
+
+        crown.draw_x += crown.Dir * global_var.scroll_speed
+
+    @staticmethod
+    def draw(crown):  # frame, action, 사진 가로,세로, x,y, 크기 비율
+        crown.crown_image.clip_draw(crown.frame * crown.crown_width,
+                                     crown.action * crown.crown_height,
+                                     crown.crown_width, crown.crown_height,
+                                     crown.draw_x, crown.draw_y,
+                                     crown.crown_draw_width, crown.crown_draw_height)
+
+
+class StateMachine:
+    def __init__(self, crown):
+        self.crown = crown
+        self.cur_state = Run
+        # 상태 전환 테이블
+        # self.transitions = {
+        # 
+        #     Run: {left_down: Run, left_up: Run, right_down: Run, right_up: Run}
+        # 
+        # }
+        pass
+
+    def start(self):
+        self.cur_state.entry(self.crown, ('START', 0))
+        # entry action : event:( key == START, value == 0 )으로 전달
+
+    def update(self):
+        self.cur_state.do(self.crown)
+        pass
+
+    def draw(self):
+        self.cur_state.draw(self.crown)
+        pass
+
+    def handle_event(self, event):
+        pass        
+        # for check_event, next_state in self.transitions[self.cur_state].items():
+        #     if check_event(event):
+        #         self.cur_state.exit(self.knight, event)
+        #         self.cur_state = next_state
+        #         self.cur_state.entry(self.knight, event)
+        #         return True
+        # return False
+
+class EnemyCrown:
+    def __init__(self):
+        self.init_crown_var()
+        self.init_state_machine()
+
+    def update(self):
+        self.state_machine.update()
+        self.update_hp()
+
+
+    def draw(self):
+        self.state_machine.draw()
+
+    def handle_event(self, event):
+        self.state_machine.handle_event(('INPUT', event))  # 입력 이벤트
+
+    def init_crown_var(self):
+        self.crown_image = load_image("Object\\enemy_crown_axe.png")
+
+        self.crown_width = 515
+        self.crown_height = 452  # 한개 사진 크기
+
+        self.crown_draw_width = 515 * 1.1  # 원본 1.2배
+        self.crown_draw_height = 452 * 1.1  # 사진 그릴 크기 [ 비율 조정 ]
+
+        self.draw_x, self.draw_y = 1200, 400
+
+        self.frame = 0
+        self.HP = 100
+        self.Dir = 0
+        self.action = 0  # 0 고정
+
+    def init_state_machine(self):
+        self.state_machine = StateMachine(self)
+        self.state_machine.start()
+
+    def get_current_hp(self):
+        return self.HP
+
+    def update_hp(self):
+        pass
