@@ -4,7 +4,6 @@ from pico2d import load_image, get_time
 import global_var
 
 
-
 class Run:
 
     @staticmethod
@@ -29,6 +28,8 @@ class Run:
             crown.last_frame_time = get_time()
 
         crown.draw_x += crown.Dir * (global_var.scroll_speed + crown.speed)
+        if crown.draw_x < -crown.draw_width:
+            crown.draw_x, crown.draw_y = 1280 + crown.draw_width, random.randint(70, 650)
 
     @staticmethod
     def draw(crown):  # frame, action, 사진 가로,세로, x,y, 크기 비율
@@ -38,7 +39,8 @@ class Run:
                               crown.draw_x, crown.draw_y,
                               crown.draw_width, crown.draw_height)
 
-#==============================================================================
+
+# ==============================================================================
 class EnemyCrown:
     def __init__(self):
         self.init_crown_var()
@@ -63,7 +65,8 @@ class EnemyCrown:
         self.draw_width = 515 * 0.25  # 원본 1/4배
         self.draw_height = 452 * 0.25  # 사진 그릴 크기 [ 비율 조정 ]
 
-        self.draw_x, self.draw_y = 1200, random.randint(80, 700)
+        self.draw_x, self.draw_y = 1280 + self.draw_width, random.randint(70, 650)
+        # 화면 크기_x+ 그릴 크기_x(밖에 그리기), y범위 70~650
 
         self.frame = 0
         self.HP = 100
