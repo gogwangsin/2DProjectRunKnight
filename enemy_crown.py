@@ -1,5 +1,8 @@
+import random
+
 from pico2d import load_image, get_time
 import global_var
+
 
 
 class Run:
@@ -35,37 +38,7 @@ class Run:
                               crown.draw_x, crown.draw_y,
                               crown.draw_width, crown.draw_height)
 
-
-class StateMachine:
-    def __init__(self, crown):
-        self.crown = crown
-        self.cur_state = Run
-        # 상태 전환 테이블
-        pass
-
-    def start(self):
-        self.cur_state.entry(self.crown, ('START', 0))
-        # entry action : event:( key == START, value == 0 )으로 전달
-
-    def update(self):
-        self.cur_state.do(self.crown)
-        pass
-
-    def draw(self):
-        self.cur_state.draw(self.crown)
-        pass
-
-    def handle_event(self, event):
-        pass
-        # for check_event, next_state in self.transitions[self.cur_state].items():
-        #     if check_event(event):
-        #         self.cur_state.exit(self.knight, event)
-        #         self.cur_state = next_state
-        #         self.cur_state.entry(self.knight, event)
-        #         return True
-        # return False
-
-
+#==============================================================================
 class EnemyCrown:
     def __init__(self):
         self.init_crown_var()
@@ -90,7 +63,7 @@ class EnemyCrown:
         self.draw_width = 515 * 0.25  # 원본 1/4배
         self.draw_height = 452 * 0.25  # 사진 그릴 크기 [ 비율 조정 ]
 
-        self.draw_x, self.draw_y = 1200, 400
+        self.draw_x, self.draw_y = 1200, random.randint(80, 700)
 
         self.frame = 0
         self.HP = 100
@@ -98,6 +71,7 @@ class EnemyCrown:
         self.action = 0  # 0 고정
 
     def init_state_machine(self):
+        from enemy_state_machine import StateMachine
         self.state_machine = StateMachine(self)
         self.state_machine.start()
 
