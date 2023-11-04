@@ -1,6 +1,7 @@
 from pico2d import load_image, get_time
 from sdl2 import SDL_KEYDOWN, SDLK_LEFT, SDL_KEYUP, SDLK_RIGHT
 
+import game_framework
 import global_var
 
 
@@ -21,8 +22,10 @@ def right_down(event):
 def right_up(event):
     return event[0] == 'INPUT' and event[1].type == SDL_KEYUP and event[1].key == SDLK_RIGHT
 
+
 def time_out(event):
     return event[0] == 'TIME_OUT'
+
 
 # =========================================================
 class Run:
@@ -65,8 +68,6 @@ class Run:
                                       knight.knight_width, knight.knight_height,
                                       knight.draw_x, knight.draw_y,
                                       knight.knight_draw_width, knight.knight_draw_height)
-
-
 
 
 # ==========================================================
@@ -132,7 +133,7 @@ class Knight:
         self.knight_draw_width = 146 * 1.1  # 원본 1.2배
         self.knight_draw_height = 241 * 1.1  # 사진 그릴 크기 [ 비율 조정 ]
 
-        self.draw_x, self.draw_y = 250, 400 # 250은 사실 고정이라고 생각해도 됨 물리좌표
+        self.draw_x, self.draw_y = 250, 400  # 250은 사실 고정이라고 생각해도 됨 물리좌표
 
         self.frame = 0
         self.HP = 100
@@ -151,5 +152,6 @@ class Knight:
             print('용사 사망')
             # global_var.running = False
             # global_var.scroll_speed = 0
+            game_framework.quit()
             self.HP = 100
             return
