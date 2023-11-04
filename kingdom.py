@@ -1,7 +1,6 @@
 from pico2d import load_image
 import global_var
 
-
 # 왕성 길
 
 
@@ -88,10 +87,9 @@ class KingDom:
                                  self.sky_draw_width, self.sky_draw_height)
 
     def update_back_sky(self):
-        self.sky_draw_x -= global_var.scroll_speed - 3  # 하늘 레이어 속도 조정 변경 가능
+        self.sky_draw_x -= global_var.scroll_speed * 0.60   # 하늘 레이어 속도 조정 변경 가능
         if self.sky_draw_x < -self.sky_width:
             self.sky_draw_x = 0
-
 
     def init_back_column_var(self):
         self.column_image = load_image("BackGround\\column_background.png")
@@ -108,14 +106,17 @@ class KingDom:
     def draw_back_column_image(self):
         # 기둥 사진 1 -> [ O ][ ]
         self.column_image.clip_draw(0, 0, self.column_width, self.column_height,
-                                  self.column_draw_x, self.column_draw_y,
-                                  self.column_draw_width, self.column_draw_height)
+                                    self.column_draw_x, self.column_draw_y,
+                                    self.column_draw_width, self.column_draw_height)
 
         # 기둥 사진 2 -> self.column_width * 1.5 == 그냥 원본은 기둥이 끝에 있어서 간격이 좁아서 거리를 두고 사이클을 돌도록 함
         self.column_image.clip_draw(0, 0, self.column_width, self.column_height,
-                                  self.column_draw_x + self.column_width * 1.5, self.column_draw_y,
-                                  self.column_draw_width, self.column_draw_height)
+                                    self.column_draw_x + self.column_width * 1.5, self.column_draw_y,
+                                    self.column_draw_width, self.column_draw_height)
 
+        self.column_image.clip_draw(0, 0, self.column_width, self.column_height,
+                                    self.column_draw_x + self.column_width * 3.0, self.column_draw_y,
+                                    self.column_draw_width, self.column_draw_height)
 
     def update_back_column(self):
         self.column_draw_x -= global_var.scroll_speed

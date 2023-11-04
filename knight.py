@@ -21,8 +21,11 @@ def right_down(event):
 def right_up(event):
     return event[0] == 'INPUT' and event[1].type == SDL_KEYUP and event[1].key == SDLK_RIGHT
 
+def time_out(event):
+    return event[0] == 'TIME_OUT'
 
-class Walk:
+# =========================================================
+class Run:
 
     @staticmethod
     def entry(knight, event):
@@ -41,19 +44,19 @@ class Walk:
         knight.last_frame_time = get_time()
         knight.update_frame_time = 0.085  # 프레임 업데이트 시간 간격 : 0.8 -> 스크롤 속도에 영향 받음 : 0.08
 
+    @staticmethod
+    def exit(knight, event):
+        print('Walk Exit Action')
+        pass
+
     @staticmethod  # 함수를 그룹핑 하는 역할
     def do(knight):
         if get_time() - knight.last_frame_time > knight.update_frame_time:
             knight.frame = (knight.frame + 1) % 3
             knight.last_frame_time = get_time()
 
-        if knight.draw_y + knight.Dir * 6.5 <= 700 and knight.draw_y + knight.Dir * 6.5 >= 80:
+        if 700 >= knight.draw_y + knight.Dir * 6.5 >= 80:
             knight.draw_y += knight.Dir * 6.5
-
-    @staticmethod
-    def exit(knight, event):
-        print('Walk Exit Action')
-        pass
 
     @staticmethod
     def draw(knight):  # frame, action, 사진 가로,세로, x,y, 크기 비율
@@ -64,15 +67,17 @@ class Walk:
                                       knight.knight_draw_width, knight.knight_draw_height)
 
 
+
+
 # ==========================================================
 class StateMachine:
     def __init__(self, knight):
         self.knight = knight
-        self.cur_state = Walk
+        self.cur_state = Run
         # 상태 전환 테이블
         self.transitions = {
 
-            Walk: {left_down: Walk, left_up: Walk, right_down: Walk, right_up: Walk}
+            Run: {left_down: Run, left_up: Run, right_down: Run, right_up: Run}
 
         }
         pass
@@ -108,7 +113,7 @@ class Knight:
 
     def update(self):
         self.state_machine.update()
-        self.update_HP()
+        self.update_hp()
 
         # global_var.scroll_speed 대쉬에 따라 속도 변화
 
@@ -127,7 +132,7 @@ class Knight:
         self.knight_draw_width = 146 * 1.1  # 원본 1.2배
         self.knight_draw_height = 241 * 1.1  # 사진 그릴 크기 [ 비율 조정 ]
 
-        self.draw_x, self.draw_y = 250, 400
+        self.draw_x, self.draw_y = 250, 400 # 250은 사실 고정이라고 생각해도 됨 물리좌표
 
         self.frame = 0
         self.HP = 100
@@ -137,10 +142,10 @@ class Knight:
         self.state_machine = StateMachine(self)
         self.state_machine.start()
 
-    def get_current_HP(self):
+    def get_current_hp(self):
         return self.HP
 
-    def update_HP(self):
+    def update_hp(self):
         self.HP -= 0.25
         if self.HP <= 0:
             print('용사 사망')

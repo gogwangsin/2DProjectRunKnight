@@ -5,14 +5,13 @@ from HP import HP
 class GUI:
 
     def __init__(self, knight):
-        GUI.HP = HP(knight)
+        self.HP = HP(knight)
         pass
 
     def update(self):
-        GUI.HP.update()
+        self.HP.update()
         pass
 
-
     def draw(self):
-        GUI.HP.draw()
+        self.HP.draw()
         pass

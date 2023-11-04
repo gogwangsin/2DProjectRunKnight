@@ -6,4 +6,7 @@ def init_global_var():
     global scroll_speed
 
     running = True
-    scroll_speed = 6
+    scroll_speed = 6.4
+    # scroll_speed = 0 # 6.4
+
+
