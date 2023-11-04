@@ -1,4 +1,6 @@
 from pico2d import load_image, get_time, clear_canvas, update_canvas, get_events, close_canvas, open_canvas
+from sdl2 import SDL_QUIT, SDL_KEYDOWN, SDLK_ESCAPE
+
 import game_framework
 
 
@@ -7,7 +9,7 @@ def init():
     global logo_start_time
 
     open_screen()
-    image = load_image("GameMode\\tuk_credit.png")
+    image = load_image("GameMode\\title.png")
     logo_start_time = get_time()
 
 
@@ -32,7 +34,11 @@ def draw():
 
 def handle_events():
     events = get_events()
-    pass
+    for event in events:
+        if event.type == SDL_QUIT:
+            game_framework.quit()
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
+            game_framework.quit()
 
 
 def pause():
@@ -47,6 +53,6 @@ def open_screen():
     global screen_width
     global screen_height
 
-    screen_width = 800
-    screen_height = 600
+    screen_width = 1280
+    screen_height = 720
     open_canvas(screen_width, screen_height)
