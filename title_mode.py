@@ -1,33 +1,35 @@
 from pico2d import load_image, get_time, clear_canvas, update_canvas, get_events, close_canvas, open_canvas
-from sdl2 import SDL_QUIT, SDL_KEYDOWN, SDLK_ESCAPE
+from sdl2 import SDL_QUIT, SDL_KEYDOWN, SDLK_ESCAPE, SDLK_SPACE
 
 import game_framework
+import play_mode
 
 
 def init():
-    global image
-    global logo_start_time
-
+    global title
+    global name
+    global start
     open_screen()
-    image = load_image("GameMode\\title.png")
-    logo_start_time = get_time()
+    title = load_image("GameMode\\title.png")
+    name = load_image('GameMode\\title_name.png')
+    start = load_image('GameMode\\touch_to_start.png')
+
 
 
 def finish():
-    global image
-    del image
+    global title, name, start
+    del title, name, start
 
 
 def update():
-    global logo_start_time
-    if get_time() - logo_start_time >= 2.0:
-        logo_start_time = get_time()
-        game_framework.quit()
+    pass
 
 
 def draw():
     clear_canvas()
-    image.draw(screen_width // 2, screen_height // 2)  # 400, 300
+    title.clip_draw(0, 0, 1280, 720, screen_width // 2, screen_height // 2, screen_width, screen_height)
+    name.clip_draw(0, 0, 562, 281, screen_width // 2, screen_height // 2 + 210, 506, 253)
+    start.clip_draw(0, 0, 404, 51, screen_width // 2, screen_height // 2 - 250, 364, 46)
     update_canvas()
     pass
 
@@ -36,8 +38,13 @@ def handle_events():
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
+            close_canvas()
             game_framework.quit()
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
+            close_canvas()
+            game_framework.change_mode(play_mode)
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
+            close_canvas()
             game_framework.quit()
 
 
@@ -53,6 +60,6 @@ def open_screen():
     global screen_width
     global screen_height
 
-    screen_width = 1280
-    screen_height = 720
+    screen_width = 1216
+    screen_height = 684
     open_canvas(screen_width, screen_height)
