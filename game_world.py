@@ -28,3 +28,8 @@ def remove_object(_obj):
             return  # 한 번 지웠으면 굳이 for 루프 돌 필요없다. -> 최적화
 
     raise ValueError('[오류] 없는데 왜 지우려고 하니?')  # 존재하지 않는 걸 지우려고 할 때
+
+def clear():
+    for Layer in objects:
+        Layer.clear()
+        print('객체가 모두 소멸되었습니다')

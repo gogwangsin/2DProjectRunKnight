@@ -1,15 +1,14 @@
 import random
-
 from pico2d import load_image, get_time
+import game_framework
 import global_var
+
 
 
 class Run:
 
     @staticmethod
     def entry(crown, event):
-        print('Run Entry Action')
-        # 키 flag : 한번 눌렀을 때 방향 정해짐
         crown.Dir = -1
         crown.speed = 2
 
@@ -18,7 +17,6 @@ class Run:
 
     @staticmethod
     def exit(crown, event):
-        print('Walk Exit Action')
         pass
 
     @staticmethod  # 함수를 그룹핑 하는 역할

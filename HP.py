@@ -1,6 +1,4 @@
 from pico2d import load_image
-
-
 # HP 클래스
 
 

@@ -37,7 +37,7 @@ def handle_events():
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             close_canvas()
-            game_framework.pop_mode()
+            game_framework.pop_mode() # over_mode.finish() 호출 -> game_world.clear()
             game_framework.run(title_mode)
         elif event.type == SDL_KEYDOWN and event.key == SDLK_r:
             close_canvas()

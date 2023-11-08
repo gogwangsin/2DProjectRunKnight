@@ -1,6 +1,7 @@
 from pico2d import load_image
 import global_var
 
+
 # 왕성 길
 
 
@@ -87,7 +88,7 @@ class KingDom:
                                  self.sky_draw_width, self.sky_draw_height)
 
     def update_back_sky(self):
-        self.sky_draw_x -= global_var.scroll_speed * 0.60   # 하늘 레이어 속도 조정 변경 가능
+        self.sky_draw_x -= global_var.scroll_speed * 0.60  # 하늘 레이어 속도 조정 변경 가능
         if self.sky_draw_x < -self.sky_width:
             self.sky_draw_x = 0
 

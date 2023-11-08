@@ -3,6 +3,7 @@ from sdl2 import SDL_KEYDOWN, SDLK_LEFT, SDL_KEYUP, SDLK_RIGHT
 
 import game_framework
 import global_var
+import over_mode
 
 
 # 용사 객체
@@ -32,7 +33,6 @@ class Run:
 
     @staticmethod
     def entry(knight, event):
-        print('Walk Entry Action')
         # 키 flag : 한번 눌렀을 때 방향 정해짐
         if left_down(event):
             knight.Dir += 1
@@ -49,7 +49,6 @@ class Run:
 
     @staticmethod
     def exit(knight, event):
-        print('Walk Exit Action')
         pass
 
     @staticmethod  # 함수를 그룹핑 하는 역할
@@ -147,11 +146,12 @@ class Knight:
         return self.HP
 
     def update_hp(self):
-        self.HP -= 0.25
+        self.HP -= 1.0 # 0.25
         if self.HP <= 0:
-            print('용사 사망')
-            # global_var.running = False
-            # global_var.scroll_speed = 0
-            game_framework.quit()
-            self.HP = 100
-            return
+            self.Dir = 0
+            # 스크롤 점점 줄여서 천천히 멈추게 관성 효과
+            if global_var.scroll_speed > 0:
+                # self.draw_x -= global_var.scroll_speed / 150
+                global_var.scroll_speed -= global_var.scroll_speed / 150
+            game_framework.push_mode(over_mode)
+

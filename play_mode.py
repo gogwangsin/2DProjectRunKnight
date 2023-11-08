@@ -1,9 +1,10 @@
-from pico2d import get_events, open_canvas, clear_canvas, update_canvas
+from pico2d import get_events, open_canvas, clear_canvas, update_canvas, close_canvas
 from sdl2 import SDL_QUIT, SDL_KEYDOWN, SDLK_ESCAPE
 
 import game_framework
 import game_world
 import global_var
+import title_mode
 from GUI import GUI
 from enemy_crown import EnemyCrown
 from kingdom import KingDom
@@ -14,9 +15,11 @@ def handle_events():
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
+            close_canvas()
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-            game_framework.quit()
+            close_canvas()
+            game_framework.change_mode(title_mode)
         else:
             knight.handle_event(event)
 
@@ -63,4 +66,12 @@ def draw():
 
 
 def finish():
+    game_world.clear()
+    pass
+
+def pause():
+    pass
+
+
+def resume():
     pass
