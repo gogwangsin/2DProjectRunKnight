@@ -40,6 +40,8 @@ class Run:
 
 # ==============================================================================
 class EnemyCrown:
+    image = None
+
     def __init__(self):
         self.init_crown_var()
         self.init_state_machine()
@@ -55,7 +57,8 @@ class EnemyCrown:
         self.state_machine.handle_event(('INPUT', event))  # 입력 이벤트
 
     def init_crown_var(self):
-        self.image = load_image("Object\\enemy_crown_axe.png")
+        if self.image == None:
+            self.image = load_image("Object\\enemy_crown_axe.png")
 
         self.image_width = 515
         self.image_height = 452  # 한개 사진 크기
