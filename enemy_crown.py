@@ -1,7 +1,7 @@
 import random
 from pico2d import load_image, get_time
 import game_framework
-import global_var
+import play_mode
 
 
 class Run:
@@ -9,7 +9,6 @@ class Run:
     @staticmethod
     def entry(crown, event):
         crown.Dir = -1
-        crown.speed = 0.3
 
     @staticmethod
     def exit(crown, event):
@@ -20,7 +19,8 @@ class Run:
         crown.frame = (crown.frame + crown.frames_per_action * crown.action_per_time *
                        game_framework.frame_time) % 4
 
-        crown.draw_x += crown.Dir * (global_var.scroll_speed + crown.speed)
+        crown.draw_x += (crown.Dir * (play_mode.run_speed_pixel_per_second + crown.walk_speed_pixel_per_second)
+                         * game_framework.frame_time)
         if crown.draw_x < -crown.draw_width:
             crown.draw_x, crown.draw_y = 1280 + crown.draw_width, random.randint(70, 650)
 
@@ -64,10 +64,15 @@ class EnemyCrown:
         self.draw_x, self.draw_y = 1280 + self.draw_width, random.randint(70, 650)
         # 화면 크기_x+ 그릴 크기_x(밖에 그리기), y범위 70~650
 
-        self.frame = 0
+        self.frame = random.randint(0, 3)
         self.time_per_action = 0.8
         self.action_per_time = 1.0 / self.time_per_action
         self.frames_per_action = 4
+
+        self.walk_speed_km_per_hour = random.randint(10, 45)
+        self.walk_speed_meter_per_minute = (self.walk_speed_km_per_hour * 1000.0 / 60.0)
+        self.walk_speed_meter_per_second = (self.walk_speed_meter_per_minute / 60.0)
+        self.walk_speed_pixel_per_second = (self.walk_speed_meter_per_second * play_mode.pixel_per_meter)
 
         self.HP = 100
         self.Dir = 0
