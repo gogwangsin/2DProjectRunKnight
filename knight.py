@@ -53,16 +53,15 @@ class Run:
 
     @staticmethod  # 함수를 그룹핑 하는 역할
     def do(knight):
-        if get_time() - knight.last_frame_time > knight.update_frame_time:
-            knight.frame = (knight.frame + 1) % 3
-            knight.last_frame_time = get_time()
+        knight.frame = ( knight.frame + knight.frames_per_action * knight.action_per_time *
+                         game_framework.frame_time) % 3
 
         if 700 >= knight.draw_y + knight.Dir * 6.5 >= 80:
             knight.draw_y += knight.Dir * 6.5
 
     @staticmethod
     def draw(knight):  # frame, action, 사진 가로,세로, x,y, 크기 비율
-        knight.knight_image.clip_draw(knight.frame * knight.knight_width,
+        knight.knight_image.clip_draw(int(knight.frame) * knight.knight_width,
                                       knight.action * knight.knight_height,
                                       knight.knight_width, knight.knight_height,
                                       knight.draw_x, knight.draw_y,
@@ -135,8 +134,14 @@ class Knight:
         self.draw_x, self.draw_y = 250, 400  # 250은 사실 고정이라고 생각해도 됨 물리좌표
 
         self.frame = 0
+        self.time_per_action = 0.3
+        self.action_per_time = 1.0 / self.time_per_action
+        self.frames_per_action = 3
+
         self.HP = 100
         self.Dir = 0
+
+
 
     def init_state_machine(self):
         self.state_machine = StateMachine(self)
@@ -146,7 +151,7 @@ class Knight:
         return self.HP
 
     def update_hp(self):
-        self.HP -= 1.0 # 0.25
+        self.HP -= 0.030 # 0.25
         if self.HP <= 0:
             self.Dir = 0
             # 스크롤 점점 줄여서 천천히 멈추게 관성 효과
