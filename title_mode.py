@@ -6,13 +6,20 @@ import play_mode
 
 
 def init():
-    global title
     global name
     global start
+    global title, title_frame, time_per_action, action_per_time, frames_per_action
+
     open_screen()
     title = load_image("GameMode\\title.png")
     name = load_image('GameMode\\title_name.png')
-    start = load_image('GameMode\\touch_to_start.png')
+    start = load_image('GameMode\\touch_to_start_sprite.png')
+
+    title_frame = 0
+    time_per_action = 2 # 하나의 액션이 소요되는 시간
+    action_per_time = 1.0 / time_per_action # 시간당 수행할 수 있는 액션 개수
+    frames_per_action = 20 # 액션 당 필요한 프레임 수
+
 
 
 
@@ -22,6 +29,8 @@ def finish():
 
 
 def update():
+    global title_frame
+    title_frame = (title_frame + frames_per_action * action_per_time * game_framework.frame_time) % 20
     pass
 
 
@@ -29,7 +38,7 @@ def draw():
     clear_canvas()
     title.clip_draw(0, 0, 1280, 720, screen_width // 2, screen_height // 2, screen_width, screen_height)
     name.clip_draw(0, 0, 562, 281, screen_width // 2, screen_height // 2 + 210, 506, 253)
-    start.clip_draw(0, 0, 404, 51, screen_width // 2, screen_height // 2 - 250, 364, 46)
+    start.clip_draw( int(title_frame) * 404, 0, 404, 51, screen_width // 2, screen_height // 2 - 250, 364, 46)
     update_canvas()
     pass
 
