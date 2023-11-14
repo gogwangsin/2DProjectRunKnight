@@ -4,16 +4,12 @@ import game_framework
 import global_var
 
 
-
 class Run:
 
     @staticmethod
     def entry(crown, event):
         crown.Dir = -1
-        crown.speed = 2
-
-        crown.last_frame_time = get_time()
-        crown.update_frame_time = 0.2  # 프레임 업데이트 시간 간격 : 0.8 -> 스크롤 속도에 영향 받음 : 0.08
+        crown.speed = 0.3
 
     @staticmethod
     def exit(crown, event):
@@ -21,9 +17,8 @@ class Run:
 
     @staticmethod  # 함수를 그룹핑 하는 역할
     def do(crown):
-        if get_time() - crown.last_frame_time > crown.update_frame_time:
-            crown.frame = (crown.frame + 1) % 4
-            crown.last_frame_time = get_time()
+        crown.frame = (crown.frame + crown.frames_per_action * crown.action_per_time *
+                       game_framework.frame_time) % 4
 
         crown.draw_x += crown.Dir * (global_var.scroll_speed + crown.speed)
         if crown.draw_x < -crown.draw_width:
@@ -31,7 +26,7 @@ class Run:
 
     @staticmethod
     def draw(crown):  # frame, action, 사진 가로,세로, x,y, 크기 비율
-        crown.image.clip_draw(crown.frame * crown.image_width,
+        crown.image.clip_draw(int(crown.frame) * crown.image_width,
                               crown.action * crown.image_height,
                               crown.image_width, crown.image_height,
                               crown.draw_x, crown.draw_y,
@@ -70,6 +65,10 @@ class EnemyCrown:
         # 화면 크기_x+ 그릴 크기_x(밖에 그리기), y범위 70~650
 
         self.frame = 0
+        self.time_per_action = 0.8
+        self.action_per_time = 1.0 / self.time_per_action
+        self.frames_per_action = 4
+
         self.HP = 100
         self.Dir = 0
         self.action = 0  # 0 고정
