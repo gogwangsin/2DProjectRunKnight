@@ -3,13 +3,23 @@ from sdl2 import SDL_QUIT, SDL_KEYDOWN, SDLK_ESCAPE
 
 import game_framework
 import game_world
-import global_var
 import title_mode
 from GUI import GUI
 from enemy_crown import EnemyCrown
 from kingdom import KingDom
 from knight import Knight
 
+
+
+def Scroll_init():
+    global pixel_per_meter, run_speed_km_per_hour, run_speed_meter_per_minute
+    global run_speed_meter_per_second, run_speed_pixel_per_second
+
+    pixel_per_meter = 10.0 / 0.3  # 10 pixel 30cm
+    run_speed_km_per_hour = 52.0  # Km / Hour
+    run_speed_meter_per_minute = (run_speed_km_per_hour * 1000.0 / 60.0)
+    run_speed_meter_per_second = (run_speed_meter_per_minute / 60.0)
+    run_speed_pixel_per_second = (run_speed_meter_per_second * pixel_per_meter)
 
 def handle_events():
     events = get_events()
@@ -29,9 +39,9 @@ def init():
     global knight
     global enemy
     global gui
-
     open_screen()
-    global_var.scroll_speed = 6.4
+
+    Scroll_init()
 
     kingdom = KingDom(screen_width, screen_height)
     game_world.add_object(kingdom, 0)
