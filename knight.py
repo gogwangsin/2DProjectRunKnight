@@ -2,8 +2,8 @@ from pico2d import load_image, get_time
 from sdl2 import SDL_KEYDOWN, SDLK_LEFT, SDL_KEYUP, SDLK_RIGHT
 
 import game_framework
-import global_var
 import over_mode
+import play_mode
 
 
 # 용사 객체
@@ -56,8 +56,10 @@ class Run:
         knight.frame = ( knight.frame + knight.frames_per_action * knight.action_per_time *
                          game_framework.frame_time) % 3
 
-        if 700 >= knight.draw_y + knight.Dir * 6.5 >= 80:
-            knight.draw_y += knight.Dir * 6.5
+        # if 700 >= knight.draw_y + knight.Dir * 6.5 >= 80:
+        #     knight.draw_y += knight.Dir * 6.5
+        if 700 >= knight.draw_y + knight.Dir * knight.walk_speed_pixel_per_second* game_framework.frame_time >= 80:
+            knight.draw_y += knight.Dir * knight.walk_speed_pixel_per_second * game_framework.frame_time
 
     @staticmethod
     def draw(knight):  # frame, action, 사진 가로,세로, x,y, 크기 비율
@@ -138,6 +140,12 @@ class Knight:
         self.action_per_time = 1.0 / self.time_per_action
         self.frames_per_action = 3
 
+        self.walk_speed_km_per_hour = 52.0  # Km / Hour
+        self.walk_speed_meter_per_minute = (self.walk_speed_km_per_hour * 1000.0 / 60.0)
+        self.walk_speed_meter_per_second = (self.walk_speed_meter_per_minute / 60.0)
+        self.walk_speed_pixel_per_second = (self.walk_speed_meter_per_second * play_mode.pixel_per_meter)
+
+
         self.HP = 100
         self.Dir = 0
 
@@ -155,8 +163,7 @@ class Knight:
         if self.HP <= 0:
             self.Dir = 0
             # 스크롤 점점 줄여서 천천히 멈추게 관성 효과
-            if global_var.scroll_speed > 0:
-                # self.draw_x -= global_var.scroll_speed / 150
-                global_var.scroll_speed -= global_var.scroll_speed / 150
+            if play_mode.run_speed_pixel_per_second > 0:
+                play_mode.run_speed_pixel_per_second -= play_mode.run_speed_pixel_per_second / 150
             game_framework.push_mode(over_mode)
 
