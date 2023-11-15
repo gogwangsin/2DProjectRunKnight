@@ -56,8 +56,10 @@ class Run:
             knight.draw_y += knight.Dir * knight.walk_speed_pixel_per_second * game_framework.frame_time
 
         if knight.HP <= 30:
-            knight.warnning_frame = (knight.warnning_frame + knight.warnning_frames_per_action *
-                                     knight.warnning_action_per_time * game_framework.frame_time) % 10
+            knight.warning_frame = (knight.warning_frame + knight.warning_frames_per_action *
+                                    knight.warning_action_per_time * game_framework.frame_time) % 10
+            knight.sweat_frame = (knight.sweat_frame + knight.sweat_frames_per_action *
+                                    knight.sweat_action_per_time * game_framework.frame_time) % 3
 
 
     @staticmethod
@@ -68,9 +70,10 @@ class Run:
                                       knight.draw_x, knight.draw_y,
                                       knight.knight_draw_width, knight.knight_draw_height)
         if knight.HP <= 30:
-            knight.warnning_image.clip_draw(int(knight.warnning_frame) * 105, 0, 105, 25,
-                                          knight.draw_x - 20, knight.draw_y + 80, 105 * 0.95, 25 * 0.95)
-
+            knight.warning_image.clip_draw(int(knight.warning_frame) * 105, 0, 105, 25,
+                                           knight.draw_x - 20, knight.draw_y + 80, 105 * 0.95, 25 * 0.95)
+            knight.sweat_image.clip_draw(int(knight.sweat_frame) * 66, 0, 66, 60,
+                                           knight.draw_x - 80, knight.draw_y + 55, 66 * 0.8, 60 * 0.8)
 
 # ==========================================================
 class StateMachine:
@@ -113,6 +116,7 @@ class Knight:
     def __init__(self):
         self.init_knight_var()
         self.init_warnning_var()
+        self.init_sweat_var()
         self.init_state_machine()
 
     def update(self):
@@ -152,12 +156,21 @@ class Knight:
 
     def init_warnning_var(self):
         # 105 x 25
-        self.warnning_image = load_image("UI\\warning_sign.png")
+        self.warning_image = load_image("UI\\warning_sign.png")
 
-        self.warnning_frame = 0
-        self.warnning_time_per_action = 0.6
-        self.warnning_action_per_time = 1.0 / self.warnning_time_per_action
-        self.warnning_frames_per_action = 10
+        self.warning_frame = 0
+        self.warning_time_per_action = 0.6
+        self.warning_action_per_time = 1.0 / self.warning_time_per_action
+        self.warning_frames_per_action = 10
+
+    def init_sweat_var(self):
+        # 66 x 60
+        self.sweat_image = load_image("UI\\sweat.png")
+
+        self.sweat_frame = 0
+        self.sweat_time_per_action = 0.3
+        self.sweat_action_per_time = 1.0 / self.sweat_time_per_action
+        self.sweat_frames_per_action = 3
 
 
     def init_state_machine(self):
