@@ -44,8 +44,6 @@ class Run:
             knight.Dir += 1
 
         knight.action = 0  # 0 걷기, 1 찌르기 2, 점프 공격
-        knight.last_frame_time = get_time()
-        knight.update_frame_time = 0.085  # 프레임 업데이트 시간 간격 : 0.8 -> 스크롤 속도에 영향 받음 : 0.08
 
     @staticmethod
     def exit(knight, event):
@@ -53,13 +51,14 @@ class Run:
 
     @staticmethod  # 함수를 그룹핑 하는 역할
     def do(knight):
-        knight.frame = ( knight.frame + knight.frames_per_action * knight.action_per_time *
-                         game_framework.frame_time) % 3
-
-        # if 700 >= knight.draw_y + knight.Dir * 6.5 >= 80:
-        #     knight.draw_y += knight.Dir * 6.5
-        if 700 >= knight.draw_y + knight.Dir * knight.walk_speed_pixel_per_second* game_framework.frame_time >= 80:
+        knight.frame = (knight.frame + knight.frames_per_action * knight.action_per_time * game_framework.frame_time) % 3
+        if 700 >= knight.draw_y + knight.Dir * knight.walk_speed_pixel_per_second * game_framework.frame_time >= 80:
             knight.draw_y += knight.Dir * knight.walk_speed_pixel_per_second * game_framework.frame_time
+
+        if knight.HP <= 30:
+            knight.warnning_frame = (knight.warnning_frame + knight.warnning_frames_per_action *
+                                     knight.warnning_action_per_time * game_framework.frame_time) % 10
+
 
     @staticmethod
     def draw(knight):  # frame, action, 사진 가로,세로, x,y, 크기 비율
@@ -68,6 +67,9 @@ class Run:
                                       knight.knight_width, knight.knight_height,
                                       knight.draw_x, knight.draw_y,
                                       knight.knight_draw_width, knight.knight_draw_height)
+        if knight.HP <= 30:
+            knight.warnning_image.clip_draw(int(knight.warnning_frame) * 105, 0, 105, 25,
+                                          knight.draw_x - 20, knight.draw_y + 80, 105 * 0.95, 25 * 0.95)
 
 
 # ==========================================================
@@ -110,13 +112,13 @@ class StateMachine:
 class Knight:
     def __init__(self):
         self.init_knight_var()
+        self.init_warnning_var()
         self.init_state_machine()
 
     def update(self):
         self.state_machine.update()
         self.update_hp()
 
-        # global_var.scroll_speed 대쉬에 따라 속도 변화
 
     def draw(self):
         self.state_machine.draw()
@@ -145,10 +147,17 @@ class Knight:
         self.walk_speed_meter_per_second = (self.walk_speed_meter_per_minute / 60.0)
         self.walk_speed_pixel_per_second = (self.walk_speed_meter_per_second * play_mode.pixel_per_meter)
 
-
-        self.HP = 100
+        self.HP = 40
         self.Dir = 0
 
+    def init_warnning_var(self):
+        # 105 x 25
+        self.warnning_image = load_image("UI\\warning_sign.png")
+
+        self.warnning_frame = 0
+        self.warnning_time_per_action = 0.6
+        self.warnning_action_per_time = 1.0 / self.warnning_time_per_action
+        self.warnning_frames_per_action = 10
 
 
     def init_state_machine(self):
@@ -159,11 +168,10 @@ class Knight:
         return self.HP
 
     def update_hp(self):
-        self.HP -= 0.030 # 0.25
+        self.HP -= 0.030  # 0.25
         if self.HP <= 0:
             self.Dir = 0
             # 스크롤 점점 줄여서 천천히 멈추게 관성 효과
             if play_mode.run_speed_pixel_per_second > 0:
                 play_mode.run_speed_pixel_per_second -= play_mode.run_speed_pixel_per_second / 150
             game_framework.push_mode(over_mode)
-
