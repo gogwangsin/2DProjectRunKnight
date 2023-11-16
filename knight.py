@@ -1,10 +1,8 @@
 from pico2d import load_image, get_time
 from sdl2 import SDL_KEYDOWN, SDLK_LEFT, SDL_KEYUP, SDLK_RIGHT
-
 import game_framework
 import over_mode
 import play_mode
-
 
 # 용사 객체
 
@@ -51,7 +49,7 @@ class Run:
 
     @staticmethod  # 함수를 그룹핑 하는 역할
     def do(knight):
-        knight.frame = (knight.frame + knight.frames_per_action * knight.action_per_time * game_framework.frame_time) % 3
+        knight.frame = (knight.frame + knight.frames_per_action * knight.action_per_time * game_framework.frame_time)%3
         if 700 >= knight.draw_y + knight.Dir * knight.walk_speed_pixel_per_second * game_framework.frame_time >= 80:
             knight.draw_y += knight.Dir * knight.walk_speed_pixel_per_second * game_framework.frame_time
 
@@ -59,8 +57,7 @@ class Run:
             knight.warning_frame = (knight.warning_frame + knight.warning_frames_per_action *
                                     knight.warning_action_per_time * game_framework.frame_time) % 10
             knight.sweat_frame = (knight.sweat_frame + knight.sweat_frames_per_action *
-                                    knight.sweat_action_per_time * game_framework.frame_time) % 3
-
+                                  knight.sweat_action_per_time * game_framework.frame_time) % 3
 
     @staticmethod
     def draw(knight):  # frame, action, 사진 가로,세로, x,y, 크기 비율
@@ -73,7 +70,8 @@ class Run:
             knight.warning_image.clip_draw(int(knight.warning_frame) * 105, 0, 105, 25,
                                            knight.draw_x - 20, knight.draw_y + 80, 105 * 0.95, 25 * 0.95)
             knight.sweat_image.clip_draw(int(knight.sweat_frame) * 66, 0, 66, 60,
-                                           knight.draw_x - 80, knight.draw_y + 55, 66 * 0.8, 60 * 0.8)
+                                         knight.draw_x - 80, knight.draw_y + 55, 66 * 0.8, 60 * 0.8)
+
 
 # ==========================================================
 class StateMachine:
@@ -123,7 +121,6 @@ class Knight:
         self.state_machine.update()
         self.update_hp()
 
-
     def draw(self):
         self.state_machine.draw()
 
@@ -151,7 +148,7 @@ class Knight:
         self.walk_speed_meter_per_second = (self.walk_speed_meter_per_minute / 60.0)
         self.walk_speed_pixel_per_second = (self.walk_speed_meter_per_second * play_mode.pixel_per_meter)
 
-        self.HP = 40
+        self.HP = 10
         self.Dir = 0
 
     def init_warnning_var(self):
@@ -172,7 +169,6 @@ class Knight:
         self.sweat_action_per_time = 1.0 / self.sweat_time_per_action
         self.sweat_frames_per_action = 3
 
-
     def init_state_machine(self):
         self.state_machine = StateMachine(self)
         self.state_machine.start()
@@ -184,7 +180,8 @@ class Knight:
         self.HP -= 0.030  # 0.25
         if self.HP <= 0:
             self.Dir = 0
-            # 스크롤 점점 줄여서 천천히 멈추게 관성 효과
-            if play_mode.run_speed_pixel_per_second > 0:
-                play_mode.run_speed_pixel_per_second -= play_mode.run_speed_pixel_per_second / 150
+            play_mode.run_speed_pixel_per_second -= play_mode.run_speed_pixel_per_second / 150
+            # print(f'{play_mode.run_speed_pixel_per_second}')
+            if play_mode.run_speed_pixel_per_second < 10:
+                play_mode.run_speed_pixel_per_second = 0
             game_framework.push_mode(over_mode)
