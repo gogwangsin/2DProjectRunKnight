@@ -4,6 +4,7 @@ import game_framework
 import over_mode
 import play_mode
 
+
 # 용사 객체
 
 def left_down(event):
@@ -49,7 +50,7 @@ class Run:
 
     @staticmethod  # 함수를 그룹핑 하는 역할
     def do(knight):
-        knight.frame = (knight.frame + knight.frames_per_action * knight.action_per_time * game_framework.frame_time)%3
+        knight.frame = (knight.frame + knight.frames_per_action * knight.action_per_time * game_framework.frame_time) % 3
         if 700 >= knight.draw_y + knight.Dir * knight.walk_speed_pixel_per_second * game_framework.frame_time >= 80:
             knight.draw_y += knight.Dir * knight.walk_speed_pixel_per_second * game_framework.frame_time
 
@@ -148,8 +149,9 @@ class Knight:
         self.walk_speed_meter_per_second = (self.walk_speed_meter_per_minute / 60.0)
         self.walk_speed_pixel_per_second = (self.walk_speed_meter_per_second * play_mode.pixel_per_meter)
 
-        self.HP = 10
+        self.HP = 100
         self.Dir = 0
+        self.HP_decrease = 0.0  # 0.03
 
     def init_warnning_var(self):
         # 105 x 25
@@ -177,11 +179,10 @@ class Knight:
         return self.HP
 
     def update_hp(self):
-        self.HP -= 0.030  # 0.25
+        self.HP -= self.HP_decrease  # 0.25
         if self.HP <= 0:
-            self.Dir = 0
+            self.HP, self.HP_decrease, self.Dir = 0, 0, 0
             play_mode.run_speed_pixel_per_second -= play_mode.run_speed_pixel_per_second / 150
-            # print(f'{play_mode.run_speed_pixel_per_second}')
             if play_mode.run_speed_pixel_per_second < 10:
                 play_mode.run_speed_pixel_per_second = 0
             game_framework.push_mode(over_mode)
