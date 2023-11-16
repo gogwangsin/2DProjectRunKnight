@@ -6,11 +6,11 @@ from sdl2 import SDL_QUIT, SDL_KEYDOWN, SDLK_ESCAPE
 import game_framework
 import game_world
 import title_mode
-from Coin import Coin
-from EnemyTrap import EnemyTrap
+from Coin import Coin, coin_add
+from EnemyTrap import EnemyTrap, trap_add
 from GUI import GUI
 from HpPortion import HPportion, hp_portion_add
-from EnemyCrown import EnemyCrown
+from EnemyCrown import EnemyCrown, enemy_crown_add
 from Kingdom import KingDom
 from RunKnight import Knight
 
@@ -42,12 +42,9 @@ def handle_events():
 def init():
     global kingdom
     global knight
-    global enemy
     global gui
-    # global portion
-    global coin
-    global trap
-    global hp_start_time
+    global hp_start_time, coin_start_time
+    global crown_start_time, trap_start_time
 
     open_screen()
 
@@ -59,19 +56,13 @@ def init():
     knight = Knight()
     game_world.add_object(knight, 1)
 
-    enemy = EnemyCrown()
-    game_world.add_object(enemy, 1)
-
-    hp_start_time = time.time()
-
-    coin = Coin()
-    game_world.add_object(coin, 1)
-
-    trap = EnemyTrap()
-    game_world.add_object(trap, 1)
-
     gui = GUI(knight)
     game_world.add_object(gui, 2)
+
+    hp_start_time = time.time()
+    coin_start_time = time.time()
+    trap_start_time = time.time()
+    crown_start_time = time.time()
 
 
 def open_screen():
@@ -108,4 +99,7 @@ def resume():
 
 def add_objects():
     hp_portion_add()
+    coin_add()
+    trap_add()
+    enemy_crown_add()
     pass
