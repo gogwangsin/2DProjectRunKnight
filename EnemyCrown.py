@@ -21,6 +21,7 @@ class Run:
 
         crown.draw_x += (crown.Dir * (play_mode.run_speed_pixel_per_second + crown.walk_speed_pixel_per_second)
                          * game_framework.frame_time)
+
         if crown.draw_x < -crown.draw_width:
             crown.draw_x, crown.draw_y = 1280 + crown.draw_width, random.randint(70, 650)
 
