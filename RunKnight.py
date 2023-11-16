@@ -35,7 +35,7 @@ def e_down(event):
     return event[0] == 'INPUT' and event[1].type == SDL_KEYDOWN and event[1].key == SDLK_e
 
 def dash_time_out(event):
-    return event[0] == 'TIME_OUT' and event[1] == 3.0
+    return event[0] == 'TIME_OUT' and event[1] == 4.0
 
 
 # =========================================================
@@ -76,8 +76,8 @@ class Run:
             knight.sweat_frame = (knight.sweat_frame + knight.sweat_frames_per_action *
                                   knight.sweat_action_per_time * game_framework.frame_time) % 3
 
-        if knight.dash_mode == True and game_framework.current_time - dash_start_time >= 3:
-            knight.state_machine.handle_event(('TIME_OUT', 3.0))
+        if knight.dash_mode == True and game_framework.current_time - dash_start_time >= 4.0:
+            knight.state_machine.handle_event(('TIME_OUT', 4.0))
 
 
     @staticmethod
@@ -100,7 +100,6 @@ class StateMachine:
         self.transitions = {
             Run: {left_down: Run, left_up: Run, right_down: Run, right_up: Run, e_down: Run, dash_time_out: Run }
         }
-        pass
 
     def start(self):
         self.cur_state.entry(self.knight, ('START', 0))
