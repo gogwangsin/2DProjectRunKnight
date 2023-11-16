@@ -5,6 +5,10 @@
 objects = [[], [], []]
 
 
+# [0] : 배경
+# [1] : 객체-> Y정렬 가변 랜더링
+# [2] : UI
+
 def add_object(_obj, depth=0):
     objects[depth].append(_obj)
 
@@ -16,9 +20,9 @@ def update():
 
 
 def render():
-    for Layer in objects:
-        for _obj in Layer:
-            _obj.draw()
+    layer_0_draw() # 배경
+    layer_1_draw() # 가변 객체
+    layer_2_draw() # GUI
 
 
 def remove_object(_obj):
@@ -29,7 +33,28 @@ def remove_object(_obj):
 
     raise ValueError('[오류] 없는데 왜 지우려고 하니?')  # 존재하지 않는 걸 지우려고 할 때
 
+
 def clear():
     for Layer in objects:
         Layer.clear()
         print('객체가 모두 소멸되었습니다')
+
+
+def layer_0_draw():
+    layer_0_objects = objects[0]
+    for obj in layer_0_objects:
+        obj.draw()
+
+
+def layer_1_draw():
+    # obj.draw_y에 따라 정렬 ( reverse 내림차순 )
+    layer_1_objects = objects[1]
+    sorted_layer_1 = sorted(layer_1_objects, key=lambda obj: obj.draw_y, reverse=True)
+    for obj in sorted_layer_1:
+        obj.draw()
+
+
+def layer_2_draw():
+    layer_2_objects = objects[2]
+    for obj in layer_2_objects:
+        obj.draw()
