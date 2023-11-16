@@ -1,4 +1,6 @@
-from pico2d import load_image
+from pico2d import load_image, load_font
+
+
 # HP 클래스
 
 
@@ -6,6 +8,7 @@ class HP:
     def __init__(self, knight):
         self.knight = knight
         self.init_hp_var()
+        self.font = load_font('Jalnan.ttf', 30)
 
     def update(self):
         self.scale_factor = self.knight.get_current_hp() / 100  # 현재체력 / 최대체력 -> 비율
@@ -19,6 +22,10 @@ class HP:
 
         self.HP_image.clip_draw(0, 0, self.HP_width, self.HP_height,
                                 self.HP_draw_x, self.HP_draw_y, self.HP_draw_width, self.HP_draw_height)
+
+        self.font.draw(320, 748, 'HP', (230, 230, 230))
+        self.font.draw(830, 748, '{:3d}'.format(int(self.knight.get_current_hp())), (230, 230, 230))
+        self.font.draw(880, 748, '/100', (230, 230, 230))
 
     def init_hp_var(self):
         self.HP_image = load_image("UI\\HP_bar.png")
