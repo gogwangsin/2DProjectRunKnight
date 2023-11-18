@@ -6,6 +6,7 @@ import game_framework
 import game_world
 import play_mode
 
+
 def enemy_crown_add():
     if game_framework.current_time - play_mode.crown_start_time >= random.uniform(1.0, 5.0):
         crown = EnemyCrown()
@@ -25,15 +26,13 @@ class Run:
 
     @staticmethod  # 함수를 그룹핑 하는 역할
     def do(crown):
-        crown.frame = (crown.frame + crown.frames_per_action * crown.action_per_time *
-                       game_framework.frame_time) % 4
-
-        crown.draw_x += (crown.Dir * (play_mode.scroll_pixel_per_second + crown.walk_pixel_per_second)
-                         * game_framework.frame_time)
-
         if crown.draw_x < -515:
             game_world.remove_object(crown)
 
+        crown.frame = (crown.frame + crown.frames_per_action * crown.action_per_time *
+                       game_framework.frame_time) % 4
+        crown.draw_x += (crown.Dir * (play_mode.scroll_pixel_per_second + crown.walk_pixel_per_second)
+                         * game_framework.frame_time)
 
     @staticmethod
     def draw(crown):  # frame, action, 사진 가로,세로, x,y, 크기 비율
@@ -65,7 +64,7 @@ class EnemyCrown:
             self.image = load_image("Object\\enemy_crown_axe.png")
 
         self.draw_x, self.draw_y = 1280 + 515, random.randint(70, 650)
-        # self.layer_y = self.draw_y - ( 452 * 0.25 / 2)
+        self.layer_y = self.draw_y - 55.0
         # 화면 크기_x+ 그릴 크기_x(밖에 그리기), y범위 70~650
 
         self.frame = random.randint(0, 3)

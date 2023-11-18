@@ -22,7 +22,7 @@ class EnemyTrap:
             self.image = load_image("Object\\enemy_trap.png")
         self.draw_x, self.draw_y = 1280 + 158, random.randint(100, 570)
         self.bounding_box_list = []
-        # self.layer_y = self.draw_y - (204 / 2)
+        self.layer_y = self.draw_y - 90.0
 
     def update(self):
         if self.draw_x < -75:

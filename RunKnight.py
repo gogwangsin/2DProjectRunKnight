@@ -80,9 +80,6 @@ class Run:
     @staticmethod  # 함수를 그룹핑 하는 역할
     def do(knight):
         global dash_start_time, angel_start_time
-        knight.frame = (knight.frame + knight.frames_per_action * knight.action_per_time * game_framework.frame_time) % 3
-        if 700 >= knight.draw_y + knight.Dir * knight.walk_pixel_per_second * game_framework.frame_time >= 80:
-            knight.draw_y += knight.Dir * knight.walk_pixel_per_second * game_framework.frame_time
 
         if knight.HP <= 30:
             knight.warning_frame = (knight.warning_frame + knight.warning_frames_per_action *
@@ -90,11 +87,15 @@ class Run:
             knight.sweat_frame = (knight.sweat_frame + knight.sweat_frames_per_action *
                                   knight.sweat_action_per_time * game_framework.frame_time) % 3
 
+        knight.frame = (knight.frame + knight.frames_per_action * knight.action_per_time * game_framework.frame_time) % 3
+        if 700 >= knight.draw_y + knight.Dir * knight.walk_pixel_per_second * game_framework.frame_time >= 80:
+            knight.draw_y += knight.Dir * knight.walk_pixel_per_second * game_framework.frame_time
+            knight.layer_y = knight.draw_y - 80
+
         if knight.dash_mode == True and game_framework.current_time - dash_start_time >= 4.0:
             knight.state_machine.handle_event(('TIME_OUT', 4.0))
         if knight.angel_mode == True and game_framework.current_time - angel_start_time >= 6.0:
             knight.state_machine.handle_event(('TIME_OUT', 6.0))
-        # knight.layer_y = knight.draw_y - (241 * 1.1) / 2
 
     @staticmethod
     def draw(knight):  # frame, action, 사진 가로,세로, x,y, 크기 비율
@@ -163,7 +164,7 @@ class Knight:
     def init_knight_var(self):
         self.knight_image = load_image("Object\\KnightSprite.png")
         self.draw_x, self.draw_y = 250, 400  # 250은 사실 고정이라고 생각해도 됨 물리좌표
-        # self.layer_y = self.draw_y - (241 * 1.1) / 2
+        self.layer_y = self.draw_y - 80
         self.Dir = 0
 
         self.frame = 0

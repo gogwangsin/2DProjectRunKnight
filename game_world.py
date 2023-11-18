@@ -20,9 +20,9 @@ def update():
 
 
 def render():
-    layer_0_draw() # 배경
-    layer_1_draw() # 가변 객체
-    layer_2_draw() # GUI
+    layer_0_draw()  # 배경
+    layer_1_draw()  # 가변 객체
+    layer_2_draw()  # GUI
 
 
 def remove_object(_obj):
@@ -37,7 +37,7 @@ def remove_object(_obj):
 def clear():
     for Layer in objects:
         Layer.clear()
-        print('객체가 모두 소멸되었습니다')
+    print('객체가 모두 소멸되었습니다')
 
 
 def layer_0_draw():
@@ -49,7 +49,7 @@ def layer_0_draw():
 def layer_1_draw():
     # obj.draw_y에 따라 정렬 ( reverse 내림차순 )
     layer_1_objects = objects[1]
-    sorted_layer_1 = sorted(layer_1_objects, key=lambda obj: obj.draw_y, reverse=True)
+    sorted_layer_1 = sorted(layer_1_objects, key=lambda obj: obj.layer_y, reverse=True)
     for obj in sorted_layer_1:
         obj.draw()
 
@@ -58,3 +58,15 @@ def layer_2_draw():
     layer_2_objects = objects[2]
     for obj in layer_2_objects:
         obj.draw()
+
+
+def collide(A, B):
+    LeftA, BottomA, RightA, TopA = A.get_bounding_box()
+    LeftB, BottomB, RightB, TopB = B.get_bounding_box()
+
+    if LeftA > RightB: return False
+    if RightA < LeftB: return False
+    if TopA < BottomB: return False
+    if BottomA > TopB: return False
+
+    return True

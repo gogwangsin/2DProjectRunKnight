@@ -18,15 +18,14 @@ class HPportion:
         if self.image == None:
             self.image = load_image("Object\\portion_object.png")
         self.draw_x, self.draw_y = 1280 + 75, random.randint(50, 630) # 100
-        # self.layer_y = self.draw_y - 91 / 2
+        self.layer_y = self.draw_y - 40.0
         pass
 
     def update(self):
-        self.draw_x -= play_mode.scroll_pixel_per_second * game_framework.frame_time
         if self.draw_x < -75:
-            # print('포션 삭제')
             game_world.remove_object(self)
-            # self.draw_x, self.draw_y = 1280 + 75, random.randint(50, 630)
+        self.draw_x -= play_mode.scroll_pixel_per_second * game_framework.frame_time
+
 
 
     def draw(self):

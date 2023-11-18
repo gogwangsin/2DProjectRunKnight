@@ -19,7 +19,7 @@ class Coin:
         if self.image == None:
             self.image = load_image("Object\\coin_object.png")
         self.draw_x, self.draw_y = 1280 + 81, random.randint(50, 630)
-        # self.layer_y = self.draw_y - (81 / 2)
+        self.layer_y = self.draw_y - 37.5
         self.frame = 0
         self.time_per_action = 0.4  # 하나의 액션이 소요되는 시간
         self.action_per_time = 1.0 / self.time_per_action  # 시간당 수행할 수 있는 액션 개수
@@ -28,12 +28,11 @@ class Coin:
 
 
     def update(self):
+        if self.draw_x < -81:
+            game_world.remove_object(self)
         self.frame = (self.frame + self.frames_per_action * self.action_per_time * game_framework.frame_time) % 5
         self.draw_x -= play_mode.scroll_pixel_per_second * game_framework.frame_time
-        if self.draw_x < -81:
-            # print('코인 삭제')
-            game_world.remove_object(self)
-            # self.draw_x, self.draw_y = 1280 + 81, random.randint(50, 630)
+
 
     def draw(self):
         self.image.clip_draw(int(self.frame) * 81, 0, 81, 81, self.draw_x, self.draw_y, 81, 81)
