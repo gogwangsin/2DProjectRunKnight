@@ -1,6 +1,6 @@
 import time
 
-from pico2d import load_image, get_time
+from pico2d import load_image, get_time, draw_rectangle
 from sdl2 import SDL_KEYDOWN, SDLK_LEFT, SDL_KEYUP, SDLK_RIGHT, SDLK_e, SDLK_r
 import game_framework
 import game_world
@@ -39,11 +39,13 @@ def e_down(event):
 def dash_time_out(event):
     return event[0] == 'TIME_OUT' and event[1] == 4.0
 
+
 def r_down(event):
     return event[0] == 'INPUT' and event[1].type == SDL_KEYDOWN and event[1].key == SDLK_r
 
+
 def angel_time_out(event):
-    return event[0] == 'TIME_OUT' and event[1] == 6.5
+    return event[0] == 'TIME_OUT' and event[1] == 6.0
 
 
 # =========================================================
@@ -73,7 +75,7 @@ class Run:
         if r_down(event):
             knight.angel_skill()
         elif knight.angel_mode == True and angel_time_out(event):
-            angel.remove()
+            angel.set_time_over()
 
     @staticmethod  # 함수를 그룹핑 하는 역할
     def do(knight):
@@ -90,8 +92,8 @@ class Run:
 
         if knight.dash_mode == True and game_framework.current_time - dash_start_time >= 4.0:
             knight.state_machine.handle_event(('TIME_OUT', 4.0))
-        if knight.angel_mode == True and game_framework.current_time - angel_start_time >= 6.5:
-            knight.state_machine.handle_event(('TIME_OUT', 6.5))
+        if knight.angel_mode == True and game_framework.current_time - angel_start_time >= 6.0:
+            knight.state_machine.handle_event(('TIME_OUT', 6.0))
         # knight.layer_y = knight.draw_y - (241 * 1.1) / 2
 
     @staticmethod
@@ -153,6 +155,7 @@ class Knight:
 
     def draw(self):
         self.state_machine.draw()
+        draw_rectangle(*self.get_bounding_box())
 
     def handle_event(self, event):
         self.state_machine.handle_event(('INPUT', event))  # 입력 이벤트
@@ -161,6 +164,7 @@ class Knight:
         self.knight_image = load_image("Object\\KnightSprite.png")
         self.draw_x, self.draw_y = 250, 400  # 250은 사실 고정이라고 생각해도 됨 물리좌표
         # self.layer_y = self.draw_y - (241 * 1.1) / 2
+        self.Dir = 0
 
         self.frame = 0
         self.time_per_action = 0.3
@@ -172,9 +176,9 @@ class Knight:
         self.walk_meter_per_second = (self.walk_meter_per_minute / 60.0)
         self.walk_pixel_per_second = (self.walk_meter_per_second * play_mode.pixel_per_meter)
 
-        self.HP = 50
-        self.Dir = 0
+        self.HP = 30
         self.HP_decrease = 0.0  # 0.03
+        self.Coin = 0
         self.dash_mode, self.angel_mode = False, False
 
     def init_warnning_var(self):
@@ -202,13 +206,18 @@ class Knight:
     def get_current_hp(self):
         return self.HP
 
+    def get_bounding_box(self):
+        return self.draw_x - 65, self.draw_y - 80, self.draw_x + 5, self.draw_y + 65
+
     def update_hp(self):
         self.HP -= self.HP_decrease  # 0.25
         if self.HP <= 0:
             self.HP, self.HP_decrease, self.Dir = 0, 0, 0
-            play_mode.scroll_pixel_per_second -= play_mode.scroll_pixel_per_second / 150
-            if play_mode.scroll_pixel_per_second < 10:
-                play_mode.run_speed_pixel_per_second = 0
+            print(f'{play_mode.scroll_pixel_per_second}')
+            if play_mode.scroll_pixel_per_second < 30:
+                play_mode.scroll_pixel_per_second = 0
+            else:
+                play_mode.scroll_pixel_per_second -= play_mode.scroll_pixel_per_second / 100
             game_framework.push_mode(over_mode)
 
     def dash_skill(self):
@@ -219,12 +228,11 @@ class Knight:
         game_world.add_object(dash, 1)
         dash_start_time = time.time()
 
-
     def angel_skill(self):
         global angel_start_time, angel
         if self.angel_mode == True: return
         self.angel_mode = True
         angel = KnightAngel(self)
-        game_world.add_object(angel, 1)
+        game_world.add_object(angel, 2)
         angel_start_time = time.time()
 

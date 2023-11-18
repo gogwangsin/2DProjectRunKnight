@@ -1,15 +1,13 @@
 import random
 import time
 
-from pico2d import load_image, get_time
+from pico2d import load_image, get_time, draw_rectangle
 import game_framework
 import game_world
 import play_mode
 
 def enemy_crown_add():
-    global crown
-
-    if game_framework.current_time - play_mode.crown_start_time >= 1:
+    if game_framework.current_time - play_mode.crown_start_time >= random.uniform(1.0, 5.0):
         crown = EnemyCrown()
         game_world.add_object(crown, 1)
         play_mode.crown_start_time = time.time()
@@ -57,6 +55,7 @@ class EnemyCrown:
 
     def draw(self):
         self.state_machine.draw()
+        draw_rectangle(*self.get_bounding_box())
 
     def handle_event(self, event):
         self.state_machine.handle_event(('INPUT', event))  # 입력 이벤트
@@ -66,6 +65,7 @@ class EnemyCrown:
             self.image = load_image("Object\\enemy_crown_axe.png")
 
         self.draw_x, self.draw_y = 1280 + 515, random.randint(70, 650)
+        # self.layer_y = self.draw_y - ( 452 * 0.25 / 2)
         # 화면 크기_x+ 그릴 크기_x(밖에 그리기), y범위 70~650
 
         self.frame = random.randint(0, 3)
@@ -78,7 +78,7 @@ class EnemyCrown:
         self.walk_meter_per_second = (self.walk_meter_per_minute / 60.0)
         self.walk_pixel_per_second = (self.walk_meter_per_second * play_mode.pixel_per_meter)
 
-        self.HP = 100
+        self.HP = 300
         self.Dir = 0
         self.action = 0  # 0 고정
 
@@ -92,3 +92,6 @@ class EnemyCrown:
 
     def update_hp(self):
         pass
+
+    def get_bounding_box(self):
+        return self.draw_x - 25.5, self.draw_y - 55.0, self.draw_x + 55, self.draw_y + 25
