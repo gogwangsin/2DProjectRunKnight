@@ -178,7 +178,7 @@ class Knight:
         self.walk_pixel_per_second = (self.walk_meter_per_second * play_mode.pixel_per_meter)
 
         self.HP = 30
-        self.HP_decrease = 0.0  # 0.03
+        self.HP_decrease = 0.03  # 0.03
         self.Coin = 0
         self.dash_mode, self.angel_mode = False, False
 
@@ -214,7 +214,7 @@ class Knight:
         self.HP -= self.HP_decrease  # 0.25
         if self.HP <= 0:
             self.HP, self.HP_decrease, self.Dir = 0, 0, 0
-            print(f'{play_mode.scroll_pixel_per_second}')
+            # print(f'{play_mode.scroll_pixel_per_second}')
             if play_mode.scroll_pixel_per_second < 30:
                 play_mode.scroll_pixel_per_second = 0
             else:
@@ -237,3 +237,7 @@ class Knight:
         game_world.add_object(angel, 2)
         angel_start_time = time.time()
 
+    def handle_collision(self, group, other):
+        if group == 'Knight:Portion':
+            print('체력 회복!')
+        pass

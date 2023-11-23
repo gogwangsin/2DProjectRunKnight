@@ -10,6 +10,7 @@ def hp_portion_add():
     if game_framework.current_time - play_mode.hp_start_time >= random.uniform(1.0, 5.0):
         portion = HPportion()
         game_world.add_object(portion, 1)
+        game_world.add_collision_pair('Knight:Portion', None, portion)
         play_mode.hp_start_time = time.time()
 
 class HPportion:
@@ -39,4 +40,8 @@ class HPportion:
     def get_bounding_box(self):
         return self.draw_x - 37.5, self.draw_y - 40.0, self.draw_x + 37.5, self.draw_y + 40
 
-
+    def handle_collision(self, group, other):
+        if group == 'Knight:Portion':
+            print('포션 획득')
+            game_world.remove_object(self)
+        pass
