@@ -1,7 +1,7 @@
 import time
 
-from pico2d import get_events, open_canvas, clear_canvas, update_canvas, close_canvas
-from sdl2 import SDL_QUIT, SDL_KEYDOWN, SDLK_ESCAPE
+from pico2d import get_events, open_canvas, clear_canvas, update_canvas, close_canvas, hide_cursor
+from sdl2 import SDL_QUIT, SDL_KEYDOWN, SDLK_ESCAPE, SDLK_b
 
 import game_framework
 import game_world
@@ -27,6 +27,7 @@ def scroll_init():
 
 
 def handle_events():
+    global bb_toggle
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
@@ -35,19 +36,24 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             close_canvas()
             game_framework.change_mode(title_mode)
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_b:
+            if bb_toggle:
+                bb_toggle = False
+            elif not bb_toggle:
+                bb_toggle = True
         else:
             knight.handle_event(event)
 
 
 def init():
-    global kingdom
-    global knight
-    global gui
+    global kingdom, knight, gui
     global hp_start_time, coin_start_time
     global crown_start_time, trap_start_time
+    global bb_toggle
 
+    bb_toggle = True
     open_screen()
-
+    hide_cursor()
     scroll_init()
 
     kingdom = KingDom(screen_width, screen_height)
@@ -55,6 +61,9 @@ def init():
 
     knight = Knight()
     game_world.add_object(knight, 1)
+    # game_world.add_collision_pair('Knight:Portion', knight, None)
+    # game_world.add_collision_pair('Knight:Coin', knight, None)
+    game_world.add_collision_pair('Knight:Trap', knight, None)
 
     gui = GUI(knight)
     game_world.add_object(gui, 2)
@@ -77,6 +86,7 @@ def open_screen():
 def update():
     add_objects()
     game_world.update()
+    game_world.handle_collisions()
 
 
 def draw():
