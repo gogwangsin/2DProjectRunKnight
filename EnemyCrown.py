@@ -54,7 +54,7 @@ class EnemyCrown:
 
     def draw(self):
         self.state_machine.draw()
-        draw_rectangle(*self.get_bounding_box())
+        if play_mode.bb_toggle: draw_rectangle(*self.get_bounding_box())
 
     def handle_event(self, event):
         self.state_machine.handle_event(('INPUT', event))  # 입력 이벤트

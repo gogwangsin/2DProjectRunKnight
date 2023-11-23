@@ -10,6 +10,7 @@ def coin_add():
     if game_framework.current_time - play_mode.coin_start_time >= random.uniform(1.0, 5.0):
         coin = Coin()
         game_world.add_object(coin, 1)
+        game_world.add_collision_pair('Knight:Coin', None, coin)
         play_mode.coin_start_time = time.time()
 
 
@@ -36,10 +37,14 @@ class Coin:
 
     def draw(self):
         self.image.clip_draw(int(self.frame) * 81, 0, 81, 81, self.draw_x, self.draw_y, 81, 81)
-        draw_rectangle(*self.get_bounding_box())
+        if play_mode.bb_toggle: draw_rectangle(*self.get_bounding_box())
 
     def handle_event(self, event):
         pass
 
     def get_bounding_box(self):
         return self.draw_x - 30.0, self.draw_y - 37.5, self.draw_x + 30.0, self.draw_y + 37.5
+
+    def handle_collision(self, group, other):
+        if group == 'Knight:Coin':
+            game_world.remove_object(self)

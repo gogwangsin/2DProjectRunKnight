@@ -21,8 +21,12 @@ class EnemyTrap:
         if self.image == None:
             self.image = load_image("Object\\enemy_trap.png")
         self.draw_x, self.draw_y = 1280 + 158, random.randint(100, 570)
-        self.bounding_box_list = []
         self.layer_y = self.draw_y - 90.0
+        self.bounding_box_list = [
+            (self.draw_x - 45, self.draw_y - 90.0, self.draw_x - 10, self.draw_y - 10),
+            (self.draw_x - 20, self.draw_y - 35.0, self.draw_x + 15, self.draw_y + 45),
+            (self.draw_x + 10, self.draw_y + 20.0, self.draw_x + 45, self.draw_y + 100)
+        ]
 
     def update(self):
         if self.draw_x < -75:
@@ -32,8 +36,9 @@ class EnemyTrap:
 
     def draw(self):
         self.image.clip_draw(0, 0, 158, 204, self.draw_x, self.draw_y, 158, 204)
-        for box in self.bounding_box_list:
-            draw_rectangle(*box)
+        if play_mode.bb_toggle:
+            for box in self.bounding_box_list:
+                draw_rectangle(*box)
 
     def handle_event(self, event):
         pass
@@ -47,3 +52,5 @@ class EnemyTrap:
             (self.draw_x - 20, self.draw_y - 35.0, self.draw_x + 15, self.draw_y + 45),
             (self.draw_x + 10, self.draw_y + 20.0, self.draw_x + 45, self.draw_y + 100)
         ]
+        pass
+

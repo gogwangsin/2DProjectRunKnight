@@ -1,5 +1,5 @@
 import time
-
+import random
 from pico2d import load_image, get_time, draw_rectangle
 from sdl2 import SDL_KEYDOWN, SDLK_LEFT, SDL_KEYUP, SDLK_RIGHT, SDLK_e, SDLK_r
 import game_framework
@@ -156,7 +156,7 @@ class Knight:
 
     def draw(self):
         self.state_machine.draw()
-        draw_rectangle(*self.get_bounding_box())
+        if play_mode.bb_toggle: draw_rectangle(*self.get_bounding_box())
 
     def handle_event(self, event):
         self.state_machine.handle_event(('INPUT', event))  # 입력 이벤트
@@ -177,7 +177,7 @@ class Knight:
         self.walk_meter_per_second = (self.walk_meter_per_minute / 60.0)
         self.walk_pixel_per_second = (self.walk_meter_per_second * play_mode.pixel_per_meter)
 
-        self.HP = 30
+        self.HP = 100
         self.HP_decrease = 0.03  # 0.03
         self.Coin = 0
         self.dash_mode, self.angel_mode = False, False
@@ -239,5 +239,7 @@ class Knight:
 
     def handle_collision(self, group, other):
         if group == 'Knight:Portion':
-            print('체력 회복!')
-        pass
+            self.HP += random.randint(10, 30)
+            if self.HP > 100: self.HP = 100
+        if group == 'Knight:Coin':
+            self.Coin += random.randint(100,500)

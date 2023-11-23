@@ -31,7 +31,7 @@ class HPportion:
 
     def draw(self):
         self.image.clip_draw(0, 0, 75, 91, self.draw_x, self.draw_y, 75, 91)
-        draw_rectangle(*self.get_bounding_box())
+        if play_mode.bb_toggle: draw_rectangle(*self.get_bounding_box())
         pass
 
     def handle_event(self, event):
@@ -42,6 +42,4 @@ class HPportion:
 
     def handle_collision(self, group, other):
         if group == 'Knight:Portion':
-            print('포션 획득')
             game_world.remove_object(self)
-        pass
