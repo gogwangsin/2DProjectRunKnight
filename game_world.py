@@ -65,15 +65,22 @@ def layer_2_draw():
 
 
 def collide(A, B):
-    LeftA, BottomA, RightA, TopA = A.get_bounding_box()
-    LeftB, BottomB, RightB, TopB = B.get_bounding_box()
+    A_boxes = A.get_bounding_box()
+    B_boxes = B.get_bounding_box()
 
-    if LeftA > RightB: return False
-    if RightA < LeftB: return False
-    if TopA < BottomB: return False
-    if BottomA > TopB: return False
+    for box_A in A_boxes:
+        for box_B in B_boxes:
+            LeftA, BottomA, RightA, TopA = box_A
+            LeftB, BottomB, RightB, TopB = box_B
 
-    return True
+            # 하나라도 충돌하지 않는 박스를 찾으면 False 반환
+            if LeftA > RightB or RightA < LeftB or TopA < BottomB or BottomA > TopB: continue
+
+            # 모든 조건을 만족하면 충돌이 발생했으므로 True 반환
+            return True
+            # ------------------------------------------
+    # 모든 박스를 확인했지만 충돌이 없음
+    return False
 
 
 def add_collision_pair(group, a, b):
