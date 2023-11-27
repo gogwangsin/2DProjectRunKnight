@@ -7,7 +7,7 @@ import game_world
 import over_mode
 import play_mode
 from AngelSkill import KnightAngel
-from Attacked import Attacked
+from AttackedEffect import Attacked
 from DashSkill import KnightDash
 
 
@@ -228,7 +228,7 @@ class Knight:
 
     def update_bounding_box(self):
         self.bounding_box_list = [
-            (self.draw_x - 65, self.draw_y - 80, self.draw_x + 5, self.draw_y + 65)
+            (self.draw_x - 65, self.draw_y - 80, self.draw_x + 5, self.draw_y)
         ]
 
     def dash_skill(self):
@@ -237,6 +237,7 @@ class Knight:
         self.dash_mode = True
         dash = KnightDash(self)
         game_world.add_object(dash, 1)
+        game_world.add_collision_pair('Dash:Crown', dash, None)
         dash_start_time = time.time()
 
     def angel_skill(self):
@@ -254,10 +255,13 @@ class Knight:
         if group == 'Knight:Coin':
             self.Coin += random.randint(100,500)
         if group == 'Knight:Trap' and other.is_valid:
-            self.HP -= random.randint(10, 15)
+            if self.angel_mode or self.dash_mode: return
+            self.HP -= 10
             if self.HP < 0: return
             attacked = Attacked(self)
             game_world.add_object(attacked, 2)
         if group == 'Knight:Crown' and other.is_valid:
+            if self.angel_mode or self.dash_mode: return
+            self.HP -= 15
             attacked = Attacked(self)
             game_world.add_object(attacked, 2)
