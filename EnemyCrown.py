@@ -11,6 +11,7 @@ def enemy_crown_add():
     if game_framework.current_time - play_mode.crown_start_time >= random.uniform(1.0, 5.0):
         crown = EnemyCrown()
         game_world.add_object(crown, 1)
+        game_world.add_collision_pair('Knight:Crown', None, crown)
         play_mode.crown_start_time = time.time()
 
 
@@ -51,10 +52,13 @@ class EnemyCrown:
     def update(self):
         self.state_machine.update()
         self.update_hp()
+        self.update_bounding_box()
 
     def draw(self):
         self.state_machine.draw()
-        if play_mode.bb_toggle: draw_rectangle(*self.get_bounding_box())
+        if play_mode.bb_toggle:
+            for box in self.bounding_box_list:
+                draw_rectangle(*box)
 
     def handle_event(self, event):
         self.state_machine.handle_event(('INPUT', event))  # 입력 이벤트
@@ -80,6 +84,8 @@ class EnemyCrown:
         self.HP = 300
         self.Dir = 0
         self.action = 0  # 0 고정
+        self.bounding_box_list = []
+        self.is_valid = True
 
     def init_state_machine(self):
         from enemy_state_machine import StateMachine
@@ -93,4 +99,15 @@ class EnemyCrown:
         pass
 
     def get_bounding_box(self):
-        return self.draw_x - 25.5, self.draw_y - 55.0, self.draw_x + 55, self.draw_y + 25
+        return self.bounding_box_list
+
+    def update_bounding_box(self):
+        self.bounding_box_list = [
+            (self.draw_x - 25.5, self.draw_y - 55.0, self.draw_x + 55, self.draw_y + 25)
+        ]
+
+    def handle_collision(self, group, other):
+        if self.is_valid and group == 'Knight:Crown':
+            self.walk_pixel_per_second = 0
+            self.is_valid = False
+            # game_world.remove_object(self)

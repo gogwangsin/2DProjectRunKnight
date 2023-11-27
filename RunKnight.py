@@ -7,6 +7,7 @@ import game_world
 import over_mode
 import play_mode
 from AngelSkill import KnightAngel
+from Attacked import Attacked
 from DashSkill import KnightDash
 
 
@@ -153,17 +154,20 @@ class Knight:
     def update(self):
         self.state_machine.update()
         self.update_hp()
+        self.update_bounding_box()
 
     def draw(self):
         self.state_machine.draw()
-        if play_mode.bb_toggle: draw_rectangle(*self.get_bounding_box())
+        if play_mode.bb_toggle:
+            for box in self.bounding_box_list:
+                draw_rectangle(*box)
 
     def handle_event(self, event):
         self.state_machine.handle_event(('INPUT', event))  # 입력 이벤트
 
     def init_knight_var(self):
         self.knight_image = load_image("Object\\KnightSprite.png")
-        self.draw_x, self.draw_y = 250, 400  # 250은 사실 고정이라고 생각해도 됨 물리좌표
+        self.draw_x, self.draw_y = 250, 400
         self.layer_y = self.draw_y - 80
         self.Dir = 0
 
@@ -178,9 +182,10 @@ class Knight:
         self.walk_pixel_per_second = (self.walk_meter_per_second * play_mode.pixel_per_meter)
 
         self.HP = 100
-        self.HP_decrease = 0.03  # 0.03
+        self.HP_decrease = 0.0  # 0.03
         self.Coin = 0
         self.dash_mode, self.angel_mode = False, False
+        self.bounding_box_list = []
 
     def init_warnning_var(self):
         # 105 x 25
@@ -208,7 +213,7 @@ class Knight:
         return self.HP
 
     def get_bounding_box(self):
-        return self.draw_x - 65, self.draw_y - 80, self.draw_x + 5, self.draw_y + 65
+        return self.bounding_box_list
 
     def update_hp(self):
         self.HP -= self.HP_decrease  # 0.25
@@ -220,6 +225,11 @@ class Knight:
             else:
                 play_mode.scroll_pixel_per_second -= play_mode.scroll_pixel_per_second / 100
             game_framework.push_mode(over_mode)
+
+    def update_bounding_box(self):
+        self.bounding_box_list = [
+            (self.draw_x - 65, self.draw_y - 80, self.draw_x + 5, self.draw_y + 65)
+        ]
 
     def dash_skill(self):
         global dash_start_time, dash
@@ -243,3 +253,11 @@ class Knight:
             if self.HP > 100: self.HP = 100
         if group == 'Knight:Coin':
             self.Coin += random.randint(100,500)
+        if group == 'Knight:Trap' and other.is_valid:
+            self.HP -= random.randint(10, 15)
+            if self.HP < 0: return
+            attacked = Attacked(self)
+            game_world.add_object(attacked, 2)
+        if group == 'Knight:Crown' and other.is_valid:
+            attacked = Attacked(self)
+            game_world.add_object(attacked, 2)
