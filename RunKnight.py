@@ -216,15 +216,15 @@ class Knight:
         return self.bounding_box_list
 
     def update_hp(self):
-        self.HP -= self.HP_decrease  # 0.25
         if self.HP <= 0:
             self.HP, self.HP_decrease, self.Dir = 0, 0, 0
-            # print(f'{play_mode.scroll_pixel_per_second}')
             if play_mode.scroll_pixel_per_second < 30:
                 play_mode.scroll_pixel_per_second = 0
             else:
                 play_mode.scroll_pixel_per_second -= play_mode.scroll_pixel_per_second / 100
             game_framework.push_mode(over_mode)
+            return
+        self.HP -= self.HP_decrease  # 0.25
 
     def update_bounding_box(self):
         self.bounding_box_list = [
@@ -256,12 +256,12 @@ class Knight:
             self.Coin += random.randint(100,500)
         if group == 'Knight:Trap' and other.is_valid:
             if self.angel_mode or self.dash_mode: return
-            self.HP -= 10
+            # self.HP -= 10
             if self.HP < 0: return
             attacked = Attacked(self)
             game_world.add_object(attacked, 2)
         if group == 'Knight:Crown' and other.is_valid:
             if self.angel_mode or self.dash_mode: return
-            self.HP -= 15
+            # self.HP -= 15
             attacked = Attacked(self)
             game_world.add_object(attacked, 2)

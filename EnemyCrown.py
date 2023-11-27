@@ -5,6 +5,7 @@ from pico2d import load_image, get_time, draw_rectangle
 import game_framework
 import game_world
 import play_mode
+from MonsterAttackedEffect import MonsterAttacked
 
 
 def enemy_crown_add():
@@ -111,5 +112,8 @@ class EnemyCrown:
         if self.is_valid and group == 'Knight:Crown':
             self.walk_pixel_per_second = 0
             self.is_valid = False
-        if group == 'Dash:Crown':
-            game_world.remove_object(self)
+        if self.is_valid and group == 'Dash:Crown':
+            attacked = MonsterAttacked(self)
+            game_world.add_object(attacked, 2)
+            self.is_valid = False
+            # game_world.remove_object(self)
