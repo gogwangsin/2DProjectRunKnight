@@ -9,6 +9,7 @@ import play_mode
 from AngelSkill import KnightAngel
 from AttackedEffect import Attacked
 from DashSkill import KnightDash
+from HealingMotion import KnightHealing
 from SwordSkill import KnightSword
 
 
@@ -53,6 +54,10 @@ def angel_time_out(event):
 def w_down(event):
     return event[0] == 'INPUT' and event[1].type == SDL_KEYDOWN and event[1].key == SDLK_w
 
+
+def heal_time_out(event):
+    return event[0] == 'TIME_OUT' and event[1] == 3.0
+
 # =========================================================
 class Run:
 
@@ -72,7 +77,7 @@ class Run:
 
     @staticmethod
     def exit(knight, event):
-        global dash, angel
+        global dash, angel, healing
         if e_down(event):
             knight.dash_skill()
         elif knight.dash_mode == True and dash_time_out(event):
@@ -83,10 +88,12 @@ class Run:
             angel.set_time_over()
         if w_down(event):
             knight.sword_skill()
+        if knight.heal_mode == True and heal_time_out(event):
+            healing.remove()
 
     @staticmethod  # 함수를 그룹핑 하는 역할
     def do(knight):
-        global dash_start_time, angel_start_time
+        global dash_start_time, angel_start_time, heal_start_time
 
         if knight.HP <= 30:
             knight.warning_frame = (knight.warning_frame + knight.warning_frames_per_action *
@@ -103,6 +110,8 @@ class Run:
             knight.state_machine.handle_event(('TIME_OUT', 4.0))
         if knight.angel_mode == True and game_framework.current_time - angel_start_time >= 6.0:
             knight.state_machine.handle_event(('TIME_OUT', 6.0))
+        if knight.heal_mode == True and game_framework.current_time - heal_start_time >= 3.0:
+            knight.state_machine.handle_event(('TIME_OUT', 3.0))
 
     @staticmethod
     def draw(knight):  # frame, action, 사진 가로,세로, x,y, 크기 비율
@@ -123,7 +132,8 @@ class StateMachine:
         # 상태 전환 테이블
         self.transitions = {
             Run: {left_down: Run, left_up: Run, right_down: Run, right_up: Run,
-                  e_down: Run, dash_time_out: Run, r_down: Run, angel_time_out: Run, w_down: Run}
+                  e_down: Run, dash_time_out: Run, r_down: Run, angel_time_out: Run, w_down: Run,
+                  heal_time_out: Run}
         }
 
     def start(self):
@@ -187,15 +197,14 @@ class Knight:
         self.walk_meter_per_second = (self.walk_meter_per_minute / 60.0)
         self.walk_pixel_per_second = (self.walk_meter_per_second * play_mode.pixel_per_meter)
 
-        self.HP = 100
+        self.HP = 40
         self.HP_decrease = 0.0  # 0.03
         self.Coin = 0
-        self.dash_mode, self.angel_mode, self.sword_mode = False, False, False
+        self.dash_mode, self.angel_mode, self.sword_mode, self.heal_mode = False, False, False, False
         self.bounding_box_list = []
         self.action = 0
 
-    def init_warnning_var(self):
-        # 105 x 25
+    def init_warnning_var(self): # 105 x 25
         self.warning_image = load_image("UI\\warning_sign.png")
 
         self.warning_frame = 0
@@ -203,8 +212,7 @@ class Knight:
         self.warning_action_per_time = 1.0 / self.warning_time_per_action
         self.warning_frames_per_action = 10
 
-    def init_sweat_var(self):
-        # 66 x 60
+    def init_sweat_var(self): # 66 x 60
         self.sweat_image = load_image("UI\\sweat.png")
 
         self.sweat_frame = 0
@@ -226,6 +234,7 @@ class Knight:
         if self.HP <= 0:
             self.HP, self.HP_decrease, self.Dir = 0, 0, 0
             if play_mode.scroll_pixel_per_second < 30:
+                play_mode.scroll_meter_per_second = 0
                 play_mode.scroll_pixel_per_second = 0
             else:
                 play_mode.scroll_pixel_per_second -= play_mode.scroll_pixel_per_second / 100
@@ -267,16 +276,25 @@ class Knight:
 
     def handle_collision(self, group, other):
         if group == 'Knight:Portion':
+            global heal_start_time, healing
             self.HP += random.randint(5, 20)
             if self.HP > 100: self.HP = 100
+            heal_start_time = time.time()
+            if not self.heal_mode:
+                self.heal_mode = True
+                healing = KnightHealing(self)
+                game_world.add_object(healing, 1)
+
         if group == 'Knight:Coin':
             self.Coin += random.randint(100,500)
+
         if group == 'Knight:Trap' and other.is_valid:
             if self.angel_mode or self.dash_mode: return
             self.HP -= 10
             if self.HP < 0: return
             attacked = Attacked(self)
             game_world.add_object(attacked, 2)
+
         if group == 'Knight:Crown' and other.is_valid:
             if self.angel_mode or self.dash_mode: return
             print('충돌')
