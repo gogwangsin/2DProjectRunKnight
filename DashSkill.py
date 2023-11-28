@@ -39,6 +39,7 @@ class KnightDash:
     def remove(self):
         play_mode.scroll_pixel_per_second /= self.dash_speed_ratio
         self.knight.dash_mode = False
+        self.knight.action = 0
         game_world.remove_object(self)
         pass
 
@@ -47,7 +48,7 @@ class KnightDash:
 
     def update_bounding_box(self):
         self.bounding_box_list = [
-            (self.knight.draw_x - 65, self.knight.draw_y - 80, self.knight.draw_x + 5, self.knight.draw_y + 65)
+            (self.knight.draw_x - 70, self.knight.draw_y - 85, self.knight.draw_x + 10, self.knight.draw_y + 70)
         ]
 
     def handle_collision(self, group, other):

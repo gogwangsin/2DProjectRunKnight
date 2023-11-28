@@ -52,6 +52,7 @@ class KnightAngel:
     def remove(self):
         play_mode.scroll_pixel_per_second /= self.dash_speed_ratio
         self.knight.angel_mode = False
+        self.knight.action = 0
         game_world.remove_object(self)
         pass
 
