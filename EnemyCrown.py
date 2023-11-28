@@ -6,6 +6,7 @@ import game_framework
 import game_world
 import play_mode
 from MonsterAttackedEffect import MonsterAttacked
+from MonsterAttackedEffect2 import MonsterAttacked2
 
 
 def enemy_crown_add():
@@ -14,6 +15,7 @@ def enemy_crown_add():
         game_world.add_object(crown, 1)
         game_world.add_collision_pair('Knight:Crown', None, crown)
         game_world.add_collision_pair('Dash:Crown', None, crown)
+        game_world.add_collision_pair('Sword:Crown', None, crown)
         play_mode.crown_start_time = time.time()
 
 
@@ -112,8 +114,11 @@ class EnemyCrown:
         if self.is_valid and group == 'Knight:Crown':
             self.walk_pixel_per_second = 0
             self.is_valid = False
-        if self.is_valid and group == 'Dash:Crown':
-            attacked = MonsterAttacked(self)
+        elif self.is_valid and group == 'Dash:Crown':
+            attacked = MonsterAttacked2(self)
             game_world.add_object(attacked, 2)
             self.is_valid = False
             # game_world.remove_object(self)
+        if self.is_valid and group == 'Sword:Crown':
+            self.walk_pixel_per_second = 0
+            self.is_valid = False
