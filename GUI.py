@@ -4,6 +4,7 @@ from DashSkillGUI import DashGUI
 from DistancePannelGUI import DistanceGUI
 from HpGUI import HpGUI
 from CoinPannelGUI import CoinGUI
+from SwordSkillGUI import SwordGUI
 
 
 class GUI:
@@ -13,6 +14,7 @@ class GUI:
         self.DisPannel = DistanceGUI(knight)
         self.DashSkill = DashGUI(knight)
         self.AngelSkill = AngelGUI(knight)
+        self.SwordSkill = SwordGUI(knight)
         pass
 
     def update(self):
@@ -21,6 +23,7 @@ class GUI:
         self.DisPannel.update()
         self.DashSkill.update()
         self.AngelSkill.update()
+        self.SwordSkill.update()
         pass
 
     def draw(self):
@@ -29,4 +32,5 @@ class GUI:
         self.DisPannel.draw()
         self.DashSkill.draw()
         self.AngelSkill.draw()
+        self.SwordSkill.draw()
         pass

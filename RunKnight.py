@@ -190,7 +190,7 @@ class Knight:
         self.HP = 100
         self.HP_decrease = 0.0  # 0.03
         self.Coin = 0
-        self.dash_mode, self.angel_mode = False, False
+        self.dash_mode, self.angel_mode, self.sword_mode = False, False, False
         self.bounding_box_list = []
         self.action = 0
 
@@ -259,6 +259,7 @@ class Knight:
 
     def sword_skill(self):
         self.action = 1
+        self.sword_mode = True
         sword = KnightSword(self)
         game_world.add_object(sword, 1)
         game_world.add_collision_pair('Sword:Crown', sword, None)

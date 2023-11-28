@@ -37,6 +37,7 @@ class KnightSword:
 
     def remove(self):
         self.knight.action = 0
+        self.knight.sword_mode = 0
         game_world.remove_object(self)
         pass
 
