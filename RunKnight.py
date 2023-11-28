@@ -1,7 +1,7 @@
 import time
 import random
 from pico2d import load_image, get_time, draw_rectangle
-from sdl2 import SDL_KEYDOWN, SDLK_LEFT, SDL_KEYUP, SDLK_RIGHT, SDLK_e, SDLK_r
+from sdl2 import SDL_KEYDOWN, SDLK_LEFT, SDL_KEYUP, SDLK_RIGHT, SDLK_e, SDLK_r, SDLK_w
 import game_framework
 import game_world
 import over_mode
@@ -9,6 +9,7 @@ import play_mode
 from AngelSkill import KnightAngel
 from AttackedEffect import Attacked
 from DashSkill import KnightDash
+from SwordSkill import KnightSword
 
 
 # 용사 객체
@@ -49,6 +50,9 @@ def angel_time_out(event):
     return event[0] == 'TIME_OUT' and event[1] == 6.0
 
 
+def w_down(event):
+    return event[0] == 'INPUT' and event[1].type == SDL_KEYDOWN and event[1].key == SDLK_w
+
 # =========================================================
 class Run:
 
@@ -64,7 +68,7 @@ class Run:
         elif right_up(event):
             knight.Dir += 1
 
-        knight.action = 0  # 0 걷기, 1 찌르기 2, 점프 공격
+        # knight.action = 0  # 0 걷기, 1 찌르기 2, 점프 공격
 
     @staticmethod
     def exit(knight, event):
@@ -77,6 +81,8 @@ class Run:
             knight.angel_skill()
         elif knight.angel_mode == True and angel_time_out(event):
             angel.set_time_over()
+        if w_down(event):
+            knight.sword_skill()
 
     @staticmethod  # 함수를 그룹핑 하는 역할
     def do(knight):
@@ -117,7 +123,7 @@ class StateMachine:
         # 상태 전환 테이블
         self.transitions = {
             Run: {left_down: Run, left_up: Run, right_down: Run, right_up: Run,
-                  e_down: Run, dash_time_out: Run, r_down: Run, angel_time_out: Run}
+                  e_down: Run, dash_time_out: Run, r_down: Run, angel_time_out: Run, w_down: Run}
         }
 
     def start(self):
@@ -186,6 +192,7 @@ class Knight:
         self.Coin = 0
         self.dash_mode, self.angel_mode = False, False
         self.bounding_box_list = []
+        self.action = 0
 
     def init_warnning_var(self):
         # 105 x 25
@@ -228,12 +235,13 @@ class Knight:
 
     def update_bounding_box(self):
         self.bounding_box_list = [
-            (self.draw_x - 65, self.draw_y - 80, self.draw_x + 5, self.draw_y)
+            (self.draw_x - 50, self.draw_y - 80, self.draw_x - 10 , self.draw_y - 10)
         ]
 
     def dash_skill(self):
         global dash_start_time, dash
         if self.dash_mode == True: return
+        self.action = 1
         self.dash_mode = True
         dash = KnightDash(self)
         game_world.add_object(dash, 1)
@@ -243,25 +251,34 @@ class Knight:
     def angel_skill(self):
         global angel_start_time, angel
         if self.angel_mode == True: return
+        self.action = 1
         self.angel_mode = True
         angel = KnightAngel(self)
         game_world.add_object(angel, 2)
         angel_start_time = time.time()
 
+    def sword_skill(self):
+        self.action = 1
+        sword = KnightSword(self)
+        game_world.add_object(sword, 1)
+        game_world.add_collision_pair('Sword:Crown', sword, None)
+
+
     def handle_collision(self, group, other):
         if group == 'Knight:Portion':
-            self.HP += random.randint(10, 30)
+            self.HP += random.randint(5, 20)
             if self.HP > 100: self.HP = 100
         if group == 'Knight:Coin':
             self.Coin += random.randint(100,500)
         if group == 'Knight:Trap' and other.is_valid:
             if self.angel_mode or self.dash_mode: return
-            # self.HP -= 10
+            self.HP -= 10
             if self.HP < 0: return
             attacked = Attacked(self)
             game_world.add_object(attacked, 2)
         if group == 'Knight:Crown' and other.is_valid:
             if self.angel_mode or self.dash_mode: return
-            # self.HP -= 15
+            print('충돌')
+            self.HP -= 15
             attacked = Attacked(self)
             game_world.add_object(attacked, 2)
