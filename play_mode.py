@@ -7,6 +7,7 @@ import game_framework
 import game_world
 import title_mode
 from Coin import coin_add
+from EnemyRedHairGirl import enemy_girl_add
 from EnemyTrap import trap_add
 from GUI import GUI
 from HpPortion import hp_portion_add
@@ -46,11 +47,11 @@ def handle_events():
 
 
 def init():
-    global hp_start_time, coin_start_time, crown_start_time, trap_start_time
+    global hp_start_time, coin_start_time, crown_start_time, trap_start_time, girl_start_time
     global kingdom, knight, gui
     global bb_toggle
 
-    bb_toggle = False
+    bb_toggle = True
     hide_cursor()
     scroll_init()
 
@@ -63,6 +64,7 @@ def init():
     game_world.add_collision_pair('Knight:Coin', knight, None)
     game_world.add_collision_pair('Knight:Trap', knight, None)
     game_world.add_collision_pair('Knight:Crown', knight, None)
+    game_world.add_collision_pair('Knight:Girl', knight, None)
 
     gui = GUI(knight)
     game_world.add_object(gui, 2)
@@ -71,12 +73,13 @@ def init():
     coin_start_time = time.time()
     trap_start_time = time.time()
     crown_start_time = time.time()
+    girl_start_time = time.time()
 
 
 def update():
     add_objects()
-    game_world.update()
     game_world.handle_collisions()
+    game_world.update()
 
 
 def draw():
@@ -102,3 +105,4 @@ def add_objects():
     coin_add()
     trap_add()
     enemy_crown_add()
+    enemy_girl_add()
