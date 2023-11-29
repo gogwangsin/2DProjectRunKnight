@@ -8,7 +8,7 @@ def init():
     global logo_start_time
 
     open_screen()
-    image = load_image("GameMode\\tuk_credit.png")
+    image = load_image("GameMode\\logo.png")
     logo_start_time = get_time()
 
 
@@ -19,7 +19,7 @@ def finish():
 
 def update():
     global logo_start_time
-    if get_time() - logo_start_time >= 2.0:
+    if get_time() - logo_start_time >= 3.0:
         close_canvas()
         game_framework.change_mode(title_mode)
 
@@ -27,6 +27,7 @@ def update():
 def draw():
     clear_canvas()
     image.draw(screen_width // 2, screen_height // 2)  # 400, 300
+    # image.clip_draw(0, 0, 800, 600, screen_width // 2, screen_height // 2, screen_width, screen_height)
     update_canvas()
     pass
 
@@ -48,6 +49,6 @@ def open_screen():
     global screen_width
     global screen_height
 
-    screen_width = 800
-    screen_height = 600
+    screen_width = 1280
+    screen_height = 800
     open_canvas(screen_width, screen_height)
