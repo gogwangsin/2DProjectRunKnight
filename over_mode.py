@@ -6,7 +6,8 @@ import play_mode
 import title_mode
 from ResultPannel import ResultPannel
 
-mouse_x, mouse_y = 0, 0
+mouse_x, mouse_y = -200, -200
+mouse_x_size, mouse_y_size = 97 * 0.9, 92 * 0.9
 
 def init():
     global result, cursor_image
@@ -26,7 +27,7 @@ def update():
 def draw():
     clear_canvas()
     game_world.render()
-    cursor_image.clip_draw(0, 0, 97, 92, mouse_x, mouse_y, 97 * 0.9, 92 * 0.9)
+    cursor_image.clip_draw(0, 0, 97, 92, mouse_x, mouse_y, mouse_x_size, mouse_y_size)
     update_canvas()
 
 
@@ -40,8 +41,9 @@ def handle_events():
             game_framework.pop_mode()  # over_mode.finish() 호출 -> game_world.clear()
             game_framework.run(title_mode)
         elif event.type == SDL_KEYDOWN and event.key == SDLK_r:
-            game_framework.pop_mode()
-            game_framework.run(play_mode)
+            # game_framework.pop_mode()
+            # game_framework.run(play_mode)
+            game_framework.change_mode(play_mode)
         elif event.type == SDL_MOUSEMOTION:
             mouse_x, mouse_y = event.x, 800 - 1 - event.y
 
