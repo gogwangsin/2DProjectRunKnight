@@ -1,7 +1,6 @@
 from pico2d import load_image
 import game_framework
 import game_world
-import play_mode
 
 
 class MonsterAttacked:
@@ -11,8 +10,8 @@ class MonsterAttacked:
         if self.image == None:
             self.image = load_image("Skill\\monster_attacked_sprite.png")
         self.mon = monster
-        self.draw_x, self.draw_y = self.mon.draw_x, self.mon.draw_y
-        self.layer_y = self.draw_y - (136 / 2)
+        self.draw_x, self.draw_y = self.mon.draw_x - 10, self.mon.draw_y
+        self.layer_y = self.draw_y - (159 / 2)
         self.frame = 0
         self.time_per_action = 0.3  # 하나의 액션이 소요되는 시간
         self.action_per_time = 1.0 / self.time_per_action  # 시간당 수행할 수 있는 액션 개수
@@ -23,8 +22,7 @@ class MonsterAttacked:
         if int(self.frame) == 3: self.remove()
 
     def draw(self):
-        self.image.clip_draw(int(self.frame) * 178, 0, 178, 136, self.draw_x, self.draw_y, 178, 136)
+        self.image.clip_draw(int(self.frame) * 180, 0, 180, 159, self.draw_x, self.draw_y, 180, 159)
 
     def remove(self):
         game_world.remove_object(self)
-        pass

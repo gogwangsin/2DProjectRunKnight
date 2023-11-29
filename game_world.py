@@ -6,10 +6,10 @@ objects = [[], [], []]
 # [0] : 배경
 # [1] : 객체-> Y정렬 가변 랜더링
 # [2] : UI
-collision_pairs = {}
-
 
 # 충돌 관점의 월드 정의 dictionary
+collision_pairs = {}
+
 
 def add_object(_obj, depth=0):
     objects[depth].append(_obj)
@@ -35,7 +35,7 @@ def remove_object(_obj):
             del _obj
             return  # 한 번 지웠으면 굳이 for 루프 돌 필요없다. -> 최적화
 
-    raise ValueError('[오류] 없는데 왜 지우려고 하니?')  # 존재하지 않는 걸 지우려고 할 때
+    # raise ValueError('[오류] 없는데 왜 지우려고 하니?')  # 존재하지 않는 걸 지우려고 할 때
 
 
 def clear():
@@ -50,8 +50,7 @@ def layer_0_draw():
         obj.draw()
 
 
-def layer_1_draw():
-    # obj.draw_y에 따라 정렬 ( reverse 내림차순 )
+def layer_1_draw():  # obj.draw_y에 따라 정렬 ( reverse 내림차순 )
     layer_1_objects = objects[1]
     sorted_layer_1 = sorted(layer_1_objects, key=lambda obj: obj.layer_y, reverse=True)
     for obj in sorted_layer_1:
@@ -85,7 +84,7 @@ def collide(A, B):
 
 def add_collision_pair(group, a, b):
     if group not in collision_pairs:
-        print(f'New Group {group} added.')
+        # print(f'New Group {group} added.')
         collision_pairs[group] = [[], []]
     if a:
         collision_pairs[group][0].append(a)

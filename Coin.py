@@ -1,7 +1,6 @@
 import random
 import time
-
-from pico2d import load_image, get_time, draw_rectangle
+from pico2d import load_image, draw_rectangle
 import game_framework
 import game_world
 import play_mode
@@ -32,6 +31,7 @@ class Coin:
     def update(self):
         if self.draw_x < -81:
             game_world.remove_object(self)
+            return
         self.frame = (self.frame + self.frames_per_action * self.action_per_time * game_framework.frame_time) % 5
         self.draw_x -= play_mode.scroll_pixel_per_second * game_framework.frame_time
         self.update_bounding_box()

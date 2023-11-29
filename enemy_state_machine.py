@@ -1,4 +1,4 @@
-from enemy_crown import Run
+from EnemyCrown import Run
 
 
 class StateMachine:
@@ -6,7 +6,6 @@ class StateMachine:
         self.object = object
         self.cur_state = Run
         # 상태 전환 테이블
-        pass
 
     def start(self):
         self.cur_state.entry(self.object, ('START', 0))

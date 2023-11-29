@@ -29,7 +29,6 @@ class KnightDash:
         self.layer_y = self.draw_y - (187 * 0.9 / 2)
         self.update_bounding_box()
 
-
     def draw(self):
         self.image.clip_draw(int(self.frame) * 300, 0, 300, 187, self.draw_x, self.draw_y, 300 * 0.9, 187 * 0.9)
         if play_mode.bb_toggle:
@@ -41,7 +40,6 @@ class KnightDash:
         self.knight.dash_mode = False
         self.knight.action = 0
         game_world.remove_object(self)
-        pass
 
     def get_bounding_box(self):
         return self.bounding_box_list

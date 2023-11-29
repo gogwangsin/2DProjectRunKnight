@@ -12,8 +12,3 @@ class AngelGUI:
 
     def draw(self):
         self.image.clip_draw(self.knight.angel_mode * 121, 0, 121, 117, self.draw_x, self.draw_y, 121, 117)
-
-
-
-
-

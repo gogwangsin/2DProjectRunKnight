@@ -54,7 +54,6 @@ class KnightAngel:
         self.knight.angel_mode = False
         self.knight.action = 0
         game_world.remove_object(self)
-        pass
 
     def set_time_over(self):
         self.time_over = True

@@ -1,6 +1,4 @@
 from pico2d import load_image, load_font
-
-
 # HP 클래스
 
 
@@ -11,10 +9,9 @@ class HpGUI:
         self.font = load_font('Jalnan.ttf', 30)
 
     def update(self):
-        self.scale_factor = self.knight.get_current_hp() / 100  # 현재체력 / 최대체력 -> 비율
-        self.HP_draw_width = 657 * self.scale_factor  # 그릴 길이 x 체력비율 매핑
+        self.scale_factor = self.knight.get_current_hp() / 100   # 현재체력 / 최대체력 -> 비율
+        self.HP_draw_width = 657 * self.scale_factor             # 그릴 길이 x 체력비율 매핑
         self.HP_draw_x = 640 - (self.HP_width - self.HP_draw_width) / 2
-        # print('용사 체력 :', self.knight.get_current_HP())  # hp에 따라 길이 조절 -> scale_factor 수정\
 
     def draw(self):
         # HP 템플릿 크기 675, 84 [ 상수 -> 안변함 ]

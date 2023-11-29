@@ -1,9 +1,6 @@
 from pico2d import load_image
-
 import game_framework
 import play_mode
-
-
 # 왕성 길
 
 
@@ -58,7 +55,7 @@ class KingDom:
         # (0,0, 1280, 574, drawX,drawY, 1280, 720)
 
     def update_kingdom_road(self):
-        self.road_draw_x -= play_mode.run_speed_pixel_per_second * game_framework.frame_time
+        self.road_draw_x -= play_mode.scroll_pixel_per_second * game_framework.frame_time
         if self.road_draw_x < -self.road_width:
             self.road_draw_x = 0
 
@@ -90,7 +87,7 @@ class KingDom:
                                  self.sky_draw_width, self.sky_draw_height)
 
     def update_back_sky(self):
-        self.sky_draw_x -= ( play_mode.run_speed_pixel_per_second * 0.60 ) * game_framework.frame_time
+        self.sky_draw_x -= (play_mode.scroll_pixel_per_second * 0.60) * game_framework.frame_time
         if self.sky_draw_x < -self.sky_width:
             self.sky_draw_x = 0
 
@@ -122,6 +119,6 @@ class KingDom:
                                     self.column_draw_width, self.column_draw_height)
 
     def update_back_column(self):
-        self.column_draw_x -= play_mode.run_speed_pixel_per_second * game_framework.frame_time
+        self.column_draw_x -= play_mode.scroll_pixel_per_second * game_framework.frame_time
         if self.column_draw_x < -self.column_width * 1.5:
             self.column_draw_x = 0

@@ -28,7 +28,6 @@ class KnightSword:
         self.layer_y = self.draw_y - (486 * 0.9 / 2)
         self.update_bounding_box()
 
-
     def draw(self):
         self.image.clip_draw(int(self.frame) * 581, 0, 581, 126, self.draw_x, self.draw_y, 581 * 0.45, 126 * 0.45)
         if play_mode.bb_toggle:
@@ -39,7 +38,6 @@ class KnightSword:
         self.knight.action = 0
         self.knight.sword_mode = 0
         game_world.remove_object(self)
-        pass
 
     def get_bounding_box(self):
         return self.bounding_box_list

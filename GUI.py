@@ -15,7 +15,6 @@ class GUI:
         self.DashSkill = DashGUI(knight)
         self.AngelSkill = AngelGUI(knight)
         self.SwordSkill = SwordGUI(knight)
-        pass
 
     def update(self):
         self.HP.update()
@@ -24,7 +23,6 @@ class GUI:
         self.DashSkill.update()
         self.AngelSkill.update()
         self.SwordSkill.update()
-        pass
 
     def draw(self):
         self.HP.draw()
@@ -33,4 +31,3 @@ class GUI:
         self.DashSkill.draw()
         self.AngelSkill.draw()
         self.SwordSkill.draw()
-        pass

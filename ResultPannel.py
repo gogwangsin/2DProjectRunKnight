@@ -1,15 +1,9 @@
 from pico2d import load_image, load_font
-
-import GUI
 import play_mode
 
+screen_width, screen_height = 1280, 800
+screen_half_width, screen_half_height = screen_width // 2, screen_height // 2
 
-
-# screen_width = 1280, height = 800
-screen_width = 1280
-screen_height = 800
-screen_half_width = screen_width // 2
-screen_half_height = screen_height // 2
 
 class ResultPannel:
     def __init__(self):
@@ -50,7 +44,6 @@ class ResultPannel:
         self.font.draw(screen_half_width - 45, screen_half_height - 100,
                        '{:>5d}'.format(int(self.coin_num)), (255, 233, 212))
 
-
     def draw_result_menu(self):
         self.result_bar.clip_draw(0, 0, 431, 165, screen_half_width, screen_height - 73, 431, 165)
         self.result.clip_draw(0, 0, 500, 300, screen_half_width + 22, screen_height - 125, 500 * 1, 300 * 1)
@@ -59,4 +52,3 @@ class ResultPannel:
         self.restart_button.clip_draw(0, 0, 243, 87, screen_half_width, 135, 243 * 1.1, 87 * 1.1)
         self.restart.clip_draw(0, 0, 500, 300, screen_half_width + 13, screen_half_height - 285,
                                500 * 0.65, 300 * 0.65)
-

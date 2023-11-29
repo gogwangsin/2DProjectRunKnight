@@ -1,6 +1,6 @@
 import time
 import random
-from pico2d import load_image, get_time, draw_rectangle
+from pico2d import load_image, draw_rectangle
 from sdl2 import SDL_KEYDOWN, SDLK_LEFT, SDL_KEYUP, SDLK_RIGHT, SDLK_e, SDLK_r, SDLK_w
 import game_framework
 import game_world
@@ -11,8 +11,6 @@ from AttackedEffect import Attacked
 from DashSkill import KnightDash
 from HealingMotion import KnightHealing
 from SwordSkill import KnightSword
-
-
 # 용사 객체
 
 def left_down(event):
@@ -58,6 +56,7 @@ def w_down(event):
 def heal_time_out(event):
     return event[0] == 'TIME_OUT' and event[1] == 3.0
 
+
 # =========================================================
 class Run:
 
@@ -73,7 +72,6 @@ class Run:
         elif right_up(event):
             knight.Dir += 1
 
-        # knight.action = 0  # 0 걷기, 1 찌르기 2, 점프 공격
 
     @staticmethod
     def exit(knight, event):
@@ -101,7 +99,7 @@ class Run:
             knight.sweat_frame = (knight.sweat_frame + knight.sweat_frames_per_action *
                                   knight.sweat_action_per_time * game_framework.frame_time) % 3
 
-        knight.frame = (knight.frame + knight.frames_per_action * knight.action_per_time * game_framework.frame_time) % 3
+        knight.frame = (knight.frame + knight.frames_per_action * knight.action_per_time * game_framework.frame_time) %3
         if 700 >= knight.draw_y + knight.Dir * knight.walk_pixel_per_second * game_framework.frame_time >= 80:
             knight.draw_y += knight.Dir * knight.walk_pixel_per_second * game_framework.frame_time
             knight.layer_y = knight.draw_y - 80
@@ -138,15 +136,12 @@ class StateMachine:
 
     def start(self):
         self.cur_state.entry(self.knight, ('START', 0))
-        # entry action : event:( key == START, value == 0 )으로 전달
 
     def update(self):
         self.cur_state.do(self.knight)
-        pass
 
     def draw(self):
         self.cur_state.draw(self.knight)
-        pass
 
     def handle_event(self, event):
         # cur_state의 key,value값 하나씩 꺼내서 확인 [ex) left_down: Walk, left_up: Walk]
@@ -197,24 +192,22 @@ class Knight:
         self.walk_meter_per_second = (self.walk_meter_per_minute / 60.0)
         self.walk_pixel_per_second = (self.walk_meter_per_second * play_mode.pixel_per_meter)
 
-        self.HP = 40
-        self.HP_decrease = 0.0  # 0.03
+        self.HP = 100
+        self.HP_decrease = 0.03  # 0.03
         self.Coin = 0
         self.dash_mode, self.angel_mode, self.sword_mode, self.heal_mode = False, False, False, False
         self.bounding_box_list = []
         self.action = 0
 
-    def init_warnning_var(self): # 105 x 25
+    def init_warnning_var(self):  # 105 x 25
         self.warning_image = load_image("UI\\warning_sign.png")
-
         self.warning_frame = 0
         self.warning_time_per_action = 0.6
         self.warning_action_per_time = 1.0 / self.warning_time_per_action
         self.warning_frames_per_action = 10
 
-    def init_sweat_var(self): # 66 x 60
+    def init_sweat_var(self):  # 66 x 60
         self.sweat_image = load_image("UI\\sweat.png")
-
         self.sweat_frame = 0
         self.sweat_time_per_action = 0.3
         self.sweat_action_per_time = 1.0 / self.sweat_time_per_action
@@ -244,7 +237,7 @@ class Knight:
 
     def update_bounding_box(self):
         self.bounding_box_list = [
-            (self.draw_x - 50, self.draw_y - 80, self.draw_x - 10 , self.draw_y - 10)
+            (self.draw_x - 50, self.draw_y - 80, self.draw_x - 10, self.draw_y - 10)
         ]
 
     def dash_skill(self):
@@ -273,7 +266,6 @@ class Knight:
         game_world.add_object(sword, 1)
         game_world.add_collision_pair('Sword:Crown', sword, None)
 
-
     def handle_collision(self, group, other):
         if group == 'Knight:Portion':
             global heal_start_time, healing
@@ -286,7 +278,7 @@ class Knight:
                 game_world.add_object(healing, 1)
 
         if group == 'Knight:Coin':
-            self.Coin += random.randint(100,500)
+            self.Coin += random.randint(100, 500)
 
         if group == 'Knight:Trap' and other.is_valid:
             if self.angel_mode or self.dash_mode: return
@@ -297,7 +289,6 @@ class Knight:
 
         if group == 'Knight:Crown' and other.is_valid:
             if self.angel_mode or self.dash_mode: return
-            print('충돌')
             self.HP -= 15
             attacked = Attacked(self)
             game_world.add_object(attacked, 2)
