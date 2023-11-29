@@ -1,7 +1,6 @@
 import random
 import time
-
-from pico2d import load_image, get_time, draw_rectangle
+from pico2d import load_image, draw_rectangle
 import game_framework
 import game_world
 import play_mode
@@ -55,7 +54,6 @@ class EnemyCrown:
 
     def update(self):
         self.state_machine.update()
-        self.update_hp()
         self.update_bounding_box()
 
     def draw(self):
@@ -85,7 +83,6 @@ class EnemyCrown:
         self.walk_meter_per_second = (self.walk_meter_per_minute / 60.0)
         self.walk_pixel_per_second = (self.walk_meter_per_second * play_mode.pixel_per_meter)
 
-        self.HP = 300
         self.Dir = 0
         self.action = 0  # 0 고정
         self.bounding_box_list = []
@@ -95,12 +92,6 @@ class EnemyCrown:
         from enemy_state_machine import StateMachine
         self.state_machine = StateMachine(self)
         self.state_machine.start()
-
-    def get_current_hp(self):
-        return self.HP
-
-    def update_hp(self):
-        pass
 
     def get_bounding_box(self):
         return self.bounding_box_list
@@ -112,13 +103,22 @@ class EnemyCrown:
 
     def handle_collision(self, group, other):
         if self.is_valid and group == 'Knight:Crown':
-            self.walk_pixel_per_second = 0
             self.is_valid = False
-        elif self.is_valid and group == 'Dash:Crown':
-            attacked = MonsterAttacked2(self)
-            game_world.add_object(attacked, 2)
-            self.is_valid = False
-            # game_world.remove_object(self)
-        if self.is_valid and group == 'Sword:Crown':
-            self.walk_pixel_per_second = 0
-            self.is_valid = False
+        elif group == 'Dash:Crown':  # 처음 맞을 땐 -> 뒤로감 -> 두번째는 디짐
+            if self.is_valid:
+                attacked = MonsterAttacked(self)
+                game_world.add_object(attacked, 2)
+                self.is_valid = False
+            else:
+                attacked = MonsterAttacked(self)
+                game_world.add_object(attacked, 2)
+                game_world.remove_object(self)
+        if group == 'Sword:Crown':
+            if self.is_valid:
+                attacked = MonsterAttacked2(self)
+                game_world.add_object(attacked, 2)
+                self.is_valid = False
+            elif not self.is_valid:
+                attacked = MonsterAttacked2(self)
+                game_world.add_object(attacked, 2)
+                game_world.remove_object(self)
