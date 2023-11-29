@@ -4,6 +4,7 @@ from pico2d import load_image, draw_rectangle
 import game_framework
 import game_world
 import play_mode
+from behavior_tree import BehaviorTree, Action, Sequence
 
 
 def coin_add():
@@ -27,13 +28,14 @@ class Coin:
         self.action_per_time = 1.0 / self.time_per_action  # 시간당 수행할 수 있는 액션 개수
         self.frames_per_action = 5  # 액션 당 필요한 프레임 수
         self.bounding_box_list = []
+        self.build_behavior_tree()
 
     def update(self):
         if self.draw_x < -81:
             game_world.remove_object(self)
             return
         self.frame = (self.frame + self.frames_per_action * self.action_per_time * game_framework.frame_time) % 5
-        self.draw_x -= play_mode.scroll_pixel_per_second * game_framework.frame_time
+        self.bt.run()
         self.update_bounding_box()
 
     def draw(self):
@@ -56,3 +58,13 @@ class Coin:
         self.bounding_box_list = [
             (self.draw_x - 30.0, self.draw_y - 37.5, self.draw_x + 30.0, self.draw_y + 37.5)
         ]
+
+    def move(self):
+        self.draw_x -= play_mode.scroll_pixel_per_second * game_framework.frame_time
+        return BehaviorTree.SUCCESS
+
+    def build_behavior_tree(self):
+        A1 = Action('스크롤에 따라 이동', self.move)
+        root = Sequence('용사에게 끌림 혹은 이동', A1)
+        self.bt = BehaviorTree(root)
+        pass
