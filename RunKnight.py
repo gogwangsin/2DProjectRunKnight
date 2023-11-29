@@ -78,15 +78,15 @@ class Run:
         global dash, angel, healing
         if e_down(event):
             knight.dash_skill()
-        elif knight.dash_mode == True and dash_time_out(event):
+        elif knight.dash_mode and dash_time_out(event):
             dash.remove()
         if r_down(event):
             knight.angel_skill()
-        elif knight.angel_mode == True and angel_time_out(event):
+        elif knight.angel_mode and angel_time_out(event):
             angel.set_time_over()
         if w_down(event):
             knight.sword_skill()
-        if knight.heal_mode == True and heal_time_out(event):
+        if knight.heal_mode and heal_time_out(event):
             healing.remove()
 
     @staticmethod  # 함수를 그룹핑 하는 역할
@@ -104,11 +104,11 @@ class Run:
             knight.draw_y += knight.Dir * knight.walk_pixel_per_second * game_framework.frame_time
             knight.layer_y = knight.draw_y - 80
 
-        if knight.dash_mode == True and game_framework.current_time - dash_start_time >= 4.0:
+        if knight.dash_mode and game_framework.current_time - dash_start_time >= 4.0:
             knight.state_machine.handle_event(('TIME_OUT', 4.0))
-        if knight.angel_mode == True and game_framework.current_time - angel_start_time >= 6.0:
+        if knight.angel_mode and game_framework.current_time - angel_start_time >= 6.0:
             knight.state_machine.handle_event(('TIME_OUT', 6.0))
-        if knight.heal_mode == True and game_framework.current_time - heal_start_time >= 3.0:
+        if knight.heal_mode and game_framework.current_time - heal_start_time >= 3.0:
             knight.state_machine.handle_event(('TIME_OUT', 3.0))
 
     @staticmethod
@@ -192,13 +192,12 @@ class Knight:
         self.walk_meter_per_second = (self.walk_meter_per_minute / 60.0)
         self.walk_pixel_per_second = (self.walk_meter_per_second * play_mode.pixel_per_meter)
 
-        self.HP = 50
-        self.HP_decrease = 0.03  # 0.03
+        self.HP = 100
+        self.HP_decrease = 0.0  # 0.03
         self.Coin = 0
         self.live, self.dash_mode, self.angel_mode, self.sword_mode, self.heal_mode = True, False, False, False, False
         self.bounding_box_list = []
         self.action = 0
-
 
     def init_warnning_var(self):  # 105 x 25
         self.warning_image = load_image("UI\\warning_sign.png")
@@ -275,7 +274,7 @@ class Knight:
     def handle_collision(self, group, other):
         if group == 'Knight:Portion':
             global heal_start_time, healing
-            self.HP += random.randint(5, 20)
+            self.HP += random.randint(10, 25)
             if self.HP > 100: self.HP = 100
             heal_start_time = time.time()
             if not self.heal_mode:
