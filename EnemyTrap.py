@@ -1,7 +1,6 @@
 import random
 import time
-
-from pico2d import load_image, get_time, draw_rectangle
+from pico2d import load_image, draw_rectangle
 import game_framework
 import game_world
 import play_mode
@@ -11,6 +10,7 @@ def trap_add():
     if game_framework.current_time - play_mode.trap_start_time >= random.uniform(1.0, 5.0):
         trap = EnemyTrap()
         game_world.add_object(trap, 0)
+        game_world.add_collision_pair('Knight:Trap', None, trap)
         play_mode.trap_start_time = time.time()
 
 
@@ -22,15 +22,13 @@ class EnemyTrap:
             self.image = load_image("Object\\enemy_trap.png")
         self.draw_x, self.draw_y = 1280 + 158, random.randint(100, 570)
         self.layer_y = self.draw_y - 90.0
-        self.bounding_box_list = [
-            (self.draw_x - 45, self.draw_y - 90.0, self.draw_x - 10, self.draw_y - 10),
-            (self.draw_x - 20, self.draw_y - 35.0, self.draw_x + 15, self.draw_y + 45),
-            (self.draw_x + 10, self.draw_y + 20.0, self.draw_x + 45, self.draw_y + 100)
-        ]
+        self.bounding_box_list = []
+        self.is_valid = True
 
     def update(self):
         if self.draw_x < -75:
             game_world.remove_object(self)
+            return
         self.draw_x -= play_mode.scroll_pixel_per_second * game_framework.frame_time
         self.update_bounding_box()
 
@@ -52,5 +50,7 @@ class EnemyTrap:
             (self.draw_x - 20, self.draw_y - 35.0, self.draw_x + 15, self.draw_y + 45),
             (self.draw_x + 10, self.draw_y + 20.0, self.draw_x + 45, self.draw_y + 100)
         ]
-        pass
 
+    def handle_collision(self, group, other):
+        if self.is_valid and group == 'Knight:Trap':
+            self.is_valid = False
