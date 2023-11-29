@@ -192,12 +192,13 @@ class Knight:
         self.walk_meter_per_second = (self.walk_meter_per_minute / 60.0)
         self.walk_pixel_per_second = (self.walk_meter_per_second * play_mode.pixel_per_meter)
 
-        self.HP = 100
+        self.HP = 50
         self.HP_decrease = 0.03  # 0.03
         self.Coin = 0
-        self.dash_mode, self.angel_mode, self.sword_mode, self.heal_mode = False, False, False, False
+        self.live, self.dash_mode, self.angel_mode, self.sword_mode, self.heal_mode = True, False, False, False, False
         self.bounding_box_list = []
         self.action = 0
+
 
     def init_warnning_var(self):  # 105 x 25
         self.warning_image = load_image("UI\\warning_sign.png")
@@ -223,15 +224,20 @@ class Knight:
     def get_bounding_box(self):
         return self.bounding_box_list
 
+
     def update_hp(self):
         if self.HP <= 0:
-            self.HP, self.HP_decrease, self.Dir = 0, 0, 0
+            if self.live:
+                self.live = False
+                self.HP, self.HP_decrease, self.Dir = 0, 0, 0
+                game_framework.push_mode(over_mode)
+
             if play_mode.scroll_pixel_per_second < 30:
                 play_mode.scroll_meter_per_second = 0
                 play_mode.scroll_pixel_per_second = 0
             else:
-                play_mode.scroll_pixel_per_second -= play_mode.scroll_pixel_per_second / 100
-            game_framework.push_mode(over_mode)
+                play_mode.scroll_pixel_per_second -= play_mode.scroll_pixel_per_second / 500
+
             return
         self.HP -= self.HP_decrease  # 0.25
 
