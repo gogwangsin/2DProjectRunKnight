@@ -35,12 +35,14 @@ def remove_object(_obj):
             del _obj
             return  # 한 번 지웠으면 굳이 for 루프 돌 필요없다. -> 최적화
 
-    # raise ValueError('[오류] 없는데 왜 지우려고 하니?')  # 존재하지 않는 걸 지우려고 할 때
+    raise ValueError('[오류] 없는데 왜 지우려고 하니?')  # 존재하지 않는 걸 지우려고 할 때
 
 
 def clear():
+    global collision_pairs
     for Layer in objects:
         Layer.clear()
+    collision_pairs = {}
     print('객체가 모두 소멸되었습니다')
 
 
@@ -52,9 +54,13 @@ def layer_0_draw():
 
 def layer_1_draw():  # obj.draw_y에 따라 정렬 ( reverse 내림차순 )
     layer_1_objects = objects[1]
-    sorted_layer_1 = sorted(layer_1_objects, key=lambda obj: obj.layer_y, reverse=True)
-    for obj in sorted_layer_1:
+    layer_1_objects.sort(key=lambda obj: obj.layer_y, reverse=True)
+    for obj in layer_1_objects:
         obj.draw()
+    # layer_1_objects = objects[1]
+    # sorted_layer_1 = sorted(layer_1_objects, key=lambda obj: obj.layer_y, reverse = True)
+    # for obj in sorted_layer_1:
+    #     obj.draw()
 
 
 def layer_2_draw():
