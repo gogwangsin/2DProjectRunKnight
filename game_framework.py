@@ -6,10 +6,9 @@ stack = None
 
 def change_mode(mode):
     global stack
+    print('change_mode 호출', f'{mode}')
     if (len(stack) > 0):
-        # execute the current mode's finish function
         stack[-1].finish()
-        # remove the current mode
         stack.pop()
     stack.append(mode)
     mode.init()
@@ -17,6 +16,7 @@ def change_mode(mode):
 
 def push_mode(mode):
     global stack
+    print('push_mode 호출', f'{mode}')
     if (len(stack) > 0):
         stack[-1].pause()
     stack.append(mode)
@@ -25,14 +25,13 @@ def push_mode(mode):
 
 def pop_mode():
     global stack
+    print('pop_mode 호출')
     if (len(stack) > 0):
-        # execute the current mode's finish function
-        stack[-1].finish()
-        # remove the current mode
+        stack[-1].finish() # -> def finish(): game_world.clear()
         stack.pop()
 
-    # execute resume function of the previous mode
     if (len(stack) > 0):
+        print('STACK[-1]:', f'{stack[-1]}') # play_mode
         stack[-1].resume()
 
 
@@ -43,6 +42,7 @@ def quit():
 
 def run(start_mode):
     global running, stack
+    print('start_mode 호출:', f'{start_mode}')
     running = True
     stack = [start_mode]
     start_mode.init()
@@ -61,5 +61,6 @@ def run(start_mode):
 
     # repeatedly delete the top of the stack
     while (len(stack) > 0):
+        print('마지막 모드 종료 stack[-1]',f'{stack[-1]}')
         stack[-1].finish()
         stack.pop()

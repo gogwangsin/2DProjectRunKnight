@@ -38,11 +38,10 @@ def handle_events():
         if event.type == SDL_QUIT:
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-            game_framework.pop_mode()  # over_mode.finish() 호출 -> game_world.clear()
-            game_framework.run(title_mode)
+            game_framework.pop_mode()  # over_mode.finish() 호출 -> game_world.clear() + play_mode 존재
+            game_framework.change_mode(title_mode)
         elif event.type == SDL_KEYDOWN and event.key == SDLK_r:
-            # game_framework.pop_mode()
-            # game_framework.run(play_mode)
+            game_framework.pop_mode()
             game_framework.change_mode(play_mode)
         elif event.type == SDL_MOUSEMOTION:
             mouse_x, mouse_y = event.x, 800 - 1 - event.y
