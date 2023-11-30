@@ -51,7 +51,7 @@ def init():
     global kingdom, knight, gui
     global bb_toggle
 
-    bb_toggle = True
+    bb_toggle = False
     hide_cursor()
     scroll_init()
 

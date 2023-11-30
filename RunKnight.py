@@ -193,7 +193,7 @@ class Knight:
         self.walk_pixel_per_second = (self.walk_meter_per_second * play_mode.pixel_per_meter)
 
         self.HP = 100
-        self.HP_decrease = 0.0  # 0.03
+        self.HP_decrease = 0.03  # 0.03
         self.Coin = 0
         self.live, self.dash_mode, self.angel_mode, self.sword_mode, self.heal_mode = True, False, False, False, False
         self.bounding_box_list = []
