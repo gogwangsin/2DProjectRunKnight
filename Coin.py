@@ -23,7 +23,7 @@ class Coin:
         if self.image == None:
             self.image = load_image("Object\\coin_object.png")
         self.draw_x, self.draw_y = 1280 + 81, random.randint(50, 630)
-        self.layer_y = self.draw_y - 37.5
+        self.layer_y = self.draw_y - 30
         self.frame = 0
         self.time_per_action = 0.4  # 하나의 액션이 소요되는 시간
         self.action_per_time = 1.0 / self.time_per_action  # 시간당 수행할 수 있는 액션 개수
@@ -38,6 +38,7 @@ class Coin:
             return
         self.frame = (self.frame + self.frames_per_action * self.action_per_time * game_framework.frame_time) % 5
         self.bt.run()
+        self.layer_y = self.draw_y - 30
         self.update_bounding_box()
 
     def draw(self):
