@@ -9,7 +9,7 @@ from MonsterAttackedEffect2 import MonsterAttacked2
 
 
 def enemy_skull_add():
-    if game_framework.current_time - play_mode.skull_start_time >= random.uniform(1.0, 5.0):
+    if game_framework.current_time - play_mode.skull_start_time >= random.uniform(3.0, 7.0):
         skull = EnemySkull()
         game_world.add_object(skull, 1)
         game_world.add_collision_pair('Knight:Skull', None, skull)
@@ -34,13 +34,13 @@ class Run:
             game_world.remove_object(skull)
 
         skull.frame = (skull.frame + skull.frames_per_action * skull.action_per_time *
-                      game_framework.frame_time) % 4
+                       game_framework.frame_time) % 3
         skull.draw_x += (skull.Dir * (play_mode.scroll_pixel_per_second + skull.walk_pixel_per_second)
-                        * game_framework.frame_time)
+                         * game_framework.frame_time)
 
     @staticmethod
     def draw(skull):  # frame, action, 사진 가로,세로, x,y, 크기 비율
-        skull.image.clip_draw(int(skull.frame) * 396, 0, 396, 438, skull.draw_x, skull.draw_y, 396 * 0.5, 438 * 0.5)
+        skull.image.clip_draw(int(skull.frame) * 396, 0, 396, 438, skull.draw_x, skull.draw_y, 396 * 0.4, 438 * 0.4)
 
 
 # ==============================================================================
@@ -63,6 +63,7 @@ class StateMachine:
 
     def handle_event(self, event):
         pass
+
 
 # ==============================================================================
 class EnemySkull:
@@ -89,15 +90,15 @@ class EnemySkull:
         if self.image == None:
             self.image = load_image("Object\\enemy_horse_skull.png")
         #  396 438
-        self.draw_x, self.draw_y = 1280 + 396, random.randint(70, 680)
+        self.draw_x, self.draw_y = 1280 + 396, random.randint(90, 670)
         self.layer_y = self.draw_y - 55.0
 
         self.frame = random.randint(0, 3)
-        self.time_per_action = 1.5
+        self.time_per_action = 0.45
         self.action_per_time = 1.0 / self.time_per_action
-        self.frames_per_action = 4
+        self.frames_per_action = 3
 
-        self.walk_km_per_hour = random.randint(10, 35)
+        self.walk_km_per_hour = random.randint(10, 15)
         self.walk_meter_per_minute = (self.walk_km_per_hour * 1000.0 / 60.0)
         self.walk_meter_per_second = (self.walk_meter_per_minute / 60.0)
         self.walk_pixel_per_second = (self.walk_meter_per_second * play_mode.pixel_per_meter)
@@ -115,21 +116,18 @@ class EnemySkull:
 
     def update_bounding_box(self):
         self.bounding_box_list = [
-            (self.draw_x + 10, self.draw_y - 65.0, self.draw_x + 35, self.draw_y + 5)
+            (self.draw_x - 25, self.draw_y - 75.0, self.draw_x + 55, self.draw_y + 5),
+            (self.draw_x, self.draw_y + 5.0, self.draw_x + 35, self.draw_y + 35)
         ]
 
     def handle_collision(self, group, other):
         if self.is_valid and group == 'Knight:Skull':
             self.is_valid = False
-        elif group == 'Dash:Skull':  # 처음 맞을 땐 -> 뒤로감 -> 두번째는 디짐
-            if self.is_valid:
-                attacked = MonsterAttacked(self)
-                game_world.add_object(attacked, 2)
-                self.is_valid = False
-            else:
-                attacked = MonsterAttacked(self)
-                game_world.add_object(attacked, 2)
-                game_world.remove_object(self)
+        elif self.is_valid and group == 'Dash:Skull':  # 처음 맞을 땐 -> 뒤로감 -> 두번째는 디
+            attacked = MonsterAttacked(self)
+            game_world.add_object(attacked, 2)
+            self.is_valid = False
+            game_world.remove_object(self)
         if group == 'Sword:Skull':
             if self.is_valid:
                 attacked = MonsterAttacked2(self)

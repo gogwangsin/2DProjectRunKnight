@@ -90,7 +90,7 @@ class EnemyRedGirl:
             self.image = load_image("Object\\enemy_red_hair_girl.png")
         # 132 / 133
         self.draw_x, self.draw_y = 1280 + 132, random.randint(70, 680)
-        self.layer_y = self.draw_y - 55.0
+        self.layer_y = self.draw_y - 65.0
 
         self.frame = random.randint(0, 7)
         self.time_per_action = 1.5
@@ -121,15 +121,11 @@ class EnemyRedGirl:
     def handle_collision(self, group, other):
         if self.is_valid and group == 'Knight:Girl':
             self.is_valid = False
-        elif group == 'Dash:Girl':  # 처음 맞을 땐 -> 뒤로감 -> 두번째는 디짐
-            if self.is_valid:
-                attacked = MonsterAttacked(self)
-                game_world.add_object(attacked, 2)
-                self.is_valid = False
-            else:
-                attacked = MonsterAttacked(self)
-                game_world.add_object(attacked, 2)
-                game_world.remove_object(self)
+        elif self.is_valid and group == 'Dash:Girl':  # 처음 맞을 땐 -> 뒤로감 -> 두번째는 디짐
+            attacked = MonsterAttacked(self)
+            game_world.add_object(attacked, 2)
+            self.is_valid = False
+            game_world.remove_object(self)
         if group == 'Sword:Girl':
             if self.is_valid:
                 attacked = MonsterAttacked2(self)

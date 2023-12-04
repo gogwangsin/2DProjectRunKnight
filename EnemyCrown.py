@@ -102,7 +102,7 @@ class EnemyCrown:
             self.image = load_image("Object\\enemy_crown_axe.png")
 
         self.draw_x, self.draw_y = 1280 + 515, random.randint(70, 650)
-        self.layer_y = self.draw_y - 55.0
+        self.layer_y = self.draw_y - 55.0 # <- bb랑 비슷함
         # 화면 크기_x+ 그릴 크기_x(밖에 그리기), y범위 70~650
 
         self.frame = random.randint(0, 3)
@@ -134,15 +134,11 @@ class EnemyCrown:
     def handle_collision(self, group, other):
         if self.is_valid and group == 'Knight:Crown':
             self.is_valid = False
-        elif group == 'Dash:Crown':  # 처음 맞을 땐 -> 뒤로감 -> 두번째는 디짐
-            if self.is_valid:
-                attacked = MonsterAttacked(self)
-                game_world.add_object(attacked, 2)
-                self.is_valid = False
-            else:
-                attacked = MonsterAttacked(self)
-                game_world.add_object(attacked, 2)
-                game_world.remove_object(self)
+        elif self.is_valid and group == 'Dash:Crown':  # 처음 맞을 땐 -> 뒤로감 -> 두번째는 디짐
+            attacked = MonsterAttacked(self)
+            game_world.add_object(attacked, 2)
+            self.is_valid = False
+            game_world.remove_object(self)
         if group == 'Sword:Crown':
             if self.is_valid:
                 attacked = MonsterAttacked2(self)
