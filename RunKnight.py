@@ -254,6 +254,7 @@ class Knight:
         game_world.add_object(dash, 1)
         game_world.add_collision_pair('Dash:Crown', dash, None)
         game_world.add_collision_pair('Dash:Girl', dash, None)
+        game_world.add_collision_pair('Dash:Skull', dash, None)
         dash_start_time = time.time()
 
     def angel_skill(self):
@@ -272,6 +273,7 @@ class Knight:
         game_world.add_object(sword, 1)
         game_world.add_collision_pair('Sword:Crown', sword, None)
         game_world.add_collision_pair('Sword:Girl', sword, None)
+        game_world.add_collision_pair('Sword:Skull', sword, None)
 
     def handle_collision(self, group, other):
         if group == 'Knight:Portion':
@@ -303,5 +305,11 @@ class Knight:
         if group == 'Knight:Girl' and other.is_valid:
             if self.angel_mode or self.dash_mode: return
             self.HP -= 20
+            attacked = Attacked(self)
+            game_world.add_object(attacked, 2)
+
+        if group == 'Knight:Skull' and other.is_valid:
+            if self.angel_mode or self.dash_mode: return
+            self.HP -= 25
             attacked = Attacked(self)
             game_world.add_object(attacked, 2)

@@ -8,7 +8,10 @@ def change_mode(mode):
     global stack
     print('change_mode 호출', f'{mode}')
     if (len(stack) > 0):
+        # print('stack[-1]',f'{stack[-1]}')
+        # -> play_mode 용사,트랩 등등 객체 삭제
         stack[-1].finish()
+        # play_mode를 stack[]에서 빼기
         stack.pop()
     stack.append(mode)
     mode.init()
@@ -27,10 +30,14 @@ def pop_mode():
     global stack
     print('pop_mode 호출')
     if (len(stack) > 0):
-        stack[-1].finish() # -> def finish(): game_world.clear()
+        # over_mode의 result_pannel 클래스들 삭제
+        # -> def finish(): game_world.clear()
+        stack[-1].finish()
+        # over_mode를 stack[]에서 뺌
         stack.pop()
 
     if (len(stack) > 0):
+        # play_mode 실행
         print('STACK[-1]:', f'{stack[-1]}') # play_mode
         stack[-1].resume()
 
