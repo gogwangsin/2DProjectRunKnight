@@ -46,7 +46,7 @@ class KnightDash:
 
     def update_bounding_box(self):
         self.bounding_box_list = [
-            (self.knight.draw_x - 70, self.knight.draw_y - 85, self.knight.draw_x + 10, self.knight.draw_y + 70)
+            (self.knight.draw_x - 65, self.knight.draw_y - 85, self.knight.draw_x + 5, self.knight.draw_y + 65)
         ]
 
     def handle_collision(self, group, other):
