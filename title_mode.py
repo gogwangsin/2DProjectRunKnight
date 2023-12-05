@@ -1,4 +1,4 @@
-from pico2d import load_image, clear_canvas, update_canvas, get_events, hide_cursor
+from pico2d import load_image, clear_canvas, update_canvas, get_events, hide_cursor, load_music
 from sdl2 import SDL_QUIT, SDL_KEYDOWN, SDLK_ESCAPE, SDLK_SPACE
 
 import game_framework
@@ -8,12 +8,15 @@ screen_width, screen_height = 1280, 800  # 640, 400
 
 
 def init():
-    global name, start, title, title_frame, time_per_action, action_per_time, frames_per_action
+    global name, start, title, title_frame, time_per_action, action_per_time, frames_per_action, bgm
 
     hide_cursor()
     title = load_image("GameMode\\title.png")
     name = load_image('GameMode\\title_name.png')
     start = load_image('GameMode\\touch_to_start_sprite.png')
+    bgm = load_music('Sound\\backSoundTitle.mp3')
+    bgm.set_volume(32)
+    bgm.repeat_play()
 
     title_frame = 0
     time_per_action = 2  # 하나의 액션이 소요되는 시간
@@ -22,8 +25,8 @@ def init():
 
 
 def finish():
-    global title, name, start
-    del title, name, start
+    global title, name, start, bgm
+    del title, name, start, bgm
 
 
 def update():
