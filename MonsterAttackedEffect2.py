@@ -3,6 +3,7 @@ import game_framework
 import game_world
 
 
+# 검기 타격
 class MonsterAttacked2:
     image = None
 

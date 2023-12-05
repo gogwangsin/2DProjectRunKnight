@@ -76,18 +76,21 @@ class Run:
     @staticmethod
     def exit(knight, event):
         global dash, angel, healing
+
         if e_down(event):
             knight.dash_skill()
         elif knight.dash_mode and dash_time_out(event):
             if knight.dash_cooltime:
                 dash.remove()
                 knight.dash_cooltime = False # 한번만 삭제하기
+
         if r_down(event):
             knight.angel_skill()
         elif knight.angel_mode and angel_time_out(event):
             if knight.angel_cooltime:
                 angel.set_time_over()
                 knight.angel_cooltime = False
+
         if w_down(event):
             knight.sword_skill()
         if knight.heal_mode and heal_time_out(event):
@@ -308,26 +311,26 @@ class Knight:
             self.Coin += random.randint(100, 500)
 
         if group == 'Knight:Trap' and other.is_valid:
-            if self.angel_mode or self.dash_mode: return
+            if self.angel_cooltime or self.dash_cooltime: return
             self.HP -= 10
             if self.HP < 0: return
             attacked = Attacked(self)
             game_world.add_object(attacked, 2)
 
         if group == 'Knight:Crown' and other.is_valid:
-            if self.angel_mode or self.dash_mode: return
+            if self.angel_cooltime or self.dash_cooltime: return
             self.HP -= 15
             attacked = Attacked(self)
             game_world.add_object(attacked, 2)
 
         if group == 'Knight:Girl' and other.is_valid:
-            if self.angel_mode or self.dash_mode: return
+            if self.angel_cooltime or self.dash_cooltime: return
             self.HP -= 20
             attacked = Attacked(self)
             game_world.add_object(attacked, 2)
 
         if group == 'Knight:Skull' and other.is_valid:
-            if self.angel_mode or self.dash_mode: return
+            if self.angel_cooltime or self.dash_cooltime: return
             self.HP -= 25
             attacked = Attacked(self)
             game_world.add_object(attacked, 2)

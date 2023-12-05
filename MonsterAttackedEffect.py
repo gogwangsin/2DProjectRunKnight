@@ -3,6 +3,7 @@ import game_framework
 import game_world
 
 
+# 대쉬 타격
 class MonsterAttacked:
     image = None
 
