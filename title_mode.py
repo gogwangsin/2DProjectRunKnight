@@ -15,7 +15,7 @@ def init():
     name = load_image('GameMode\\title_name.png')
     start = load_image('GameMode\\touch_to_start_sprite.png')
     bgm = load_music('Sound\\backSoundTitle.mp3')
-    bgm.set_volume(32)
+    bgm.set_volume(15)
     bgm.repeat_play()
 
     title_frame = 0

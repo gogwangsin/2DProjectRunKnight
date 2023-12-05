@@ -1,4 +1,6 @@
 # GUI 클래스
+from pico2d import load_music
+
 from AngelSkillGUI import AngelGUI
 from DashSkillGUI import DashGUI
 from DistancePannelGUI import DistanceGUI
@@ -15,6 +17,9 @@ class GUI:
         self.DashSkill = DashGUI(knight)
         self.AngelSkill = AngelGUI(knight)
         self.SwordSkill = SwordGUI(knight)
+        self.bgm = load_music('Sound\\backSoundPlay.wav')
+        self.bgm.set_volume(32)
+        self.bgm.repeat_play()
 
     def update(self):
         self.HP.update()

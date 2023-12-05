@@ -1,7 +1,7 @@
 import math
 import random
 import time
-from pico2d import load_image, draw_rectangle
+from pico2d import load_image, draw_rectangle, load_wav
 import game_framework
 import game_world
 import play_mode
@@ -18,10 +18,15 @@ def coin_add():
 
 class Coin:
     image = None
+    sound = None
 
     def __init__(self):
         if self.image == None:
             self.image = load_image("Object\\coin_object.png")
+        if not Coin.sound:
+            Coin.sound = load_wav('Sound\\getCoinSound.mp3')
+            Coin.sound.set_volume(15)
+
         self.draw_x, self.draw_y = 1280 + 81, random.randint(50, 630)
         self.layer_y = self.draw_y - 30
         self.frame = 0
@@ -55,6 +60,7 @@ class Coin:
 
     def handle_collision(self, group, other):
         if group == 'Knight:Coin':
+            Coin.sound.play()
             game_world.remove_object(self)
 
     def update_bounding_box(self):

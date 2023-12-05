@@ -1,6 +1,6 @@
 import random
 import time
-from pico2d import load_image, draw_rectangle
+from pico2d import load_image, draw_rectangle, load_wav
 import game_framework
 import game_world
 import play_mode
@@ -16,13 +16,18 @@ def hp_portion_add():
 
 class HPportion:
     image = None
+    sound = None
 
     def __init__(self):
         if self.image == None:
             self.image = load_image("Object\\portion_object.png")
+        if not HPportion.sound:
+            HPportion.sound = load_wav('Sound\\getPortionSound.mp3')
+            HPportion.sound.set_volume(10)
         self.draw_x, self.draw_y = 1280 + 75, random.randint(50, 630)  # 100
         self.layer_y = self.draw_y - 40.0
         self.bounding_box_list = []
+
 
     def update(self):
         if self.draw_x < -75:
@@ -45,6 +50,7 @@ class HPportion:
 
     def handle_collision(self, group, other):
         if group == 'Knight:Portion':
+            HPportion.sound.play()
             game_world.remove_object(self)
 
     def update_bounding_box(self):
