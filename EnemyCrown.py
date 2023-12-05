@@ -6,6 +6,7 @@ import game_world
 import play_mode
 from MonsterAttackedEffect import MonsterAttacked
 from MonsterAttackedEffect2 import MonsterAttacked2
+from MonsterAttackedEffect3 import MonsterAttacked3
 
 
 def enemy_crown_add():
@@ -135,7 +136,7 @@ class EnemyCrown:
         if self.is_valid and group == 'Knight:Crown':
             self.is_valid = False
         elif self.is_valid and group == 'Dash:Crown':  # 처음 맞을 땐 -> 뒤로감 -> 두번째는 디짐
-            attacked = MonsterAttacked(self)
+            attacked = MonsterAttacked3(self)
             game_world.add_object(attacked, 2)
             self.is_valid = False
             game_world.remove_object(self)
