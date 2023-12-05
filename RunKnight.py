@@ -79,11 +79,15 @@ class Run:
         if e_down(event):
             knight.dash_skill()
         elif knight.dash_mode and dash_time_out(event):
-            dash.remove()
+            if knight.dash_cooltime:
+                dash.remove()
+                knight.dash_cooltime = False # 한번만 삭제하기
         if r_down(event):
             knight.angel_skill()
         elif knight.angel_mode and angel_time_out(event):
-            angel.set_time_over()
+            if knight.angel_cooltime:
+                angel.set_time_over()
+                knight.angel_cooltime = False
         if w_down(event):
             knight.sword_skill()
         if knight.heal_mode and heal_time_out(event):
@@ -104,10 +108,18 @@ class Run:
             knight.draw_y += knight.Dir * knight.walk_pixel_per_second * game_framework.frame_time
             knight.layer_y = knight.draw_y - 80
 
-        if knight.dash_mode and game_framework.current_time - dash_start_time >= 4.0:
-            knight.state_machine.handle_event(('TIME_OUT', 4.0))
-        if knight.angel_mode and game_framework.current_time - angel_start_time >= 6.0:
-            knight.state_machine.handle_event(('TIME_OUT', 6.0))
+        if knight.dash_mode:
+            if game_framework.current_time - dash_start_time >= 8.0: # 8초 되면 다시 가능
+                knight.dash_mode = False
+            elif game_framework.current_time - dash_start_time >= 4.0:
+                knight.state_machine.handle_event(('TIME_OUT', 4.0))
+
+        if knight.angel_mode:
+            if game_framework.current_time - angel_start_time >= 12.0: # 12초 되면 다시 가능
+                knight.angel_mode = False
+            elif game_framework.current_time - angel_start_time >= 6.0:
+                knight.state_machine.handle_event(('TIME_OUT', 6.0))
+
         if knight.heal_mode and game_framework.current_time - heal_start_time >= 3.0:
             knight.state_machine.handle_event(('TIME_OUT', 3.0))
 
@@ -196,6 +208,7 @@ class Knight:
         self.HP_decrease = 0.03  # 0.03
         self.Coin, self.Count = 0, 0
         self.live, self.dash_mode, self.angel_mode, self.sword_mode, self.heal_mode = True, False, False, False, False
+        self.dash_cooltime, self.angel_cooltime = False, False
         self.bounding_box_list = []
         self.action = 0
 
@@ -247,9 +260,10 @@ class Knight:
 
     def dash_skill(self):
         global dash_start_time, dash
-        if self.dash_mode == True: return
+        if self.dash_cooltime == True: return
         self.action = 1
         self.dash_mode = True
+        self.dash_cooltime = True
         dash = KnightDash(self)
         game_world.add_object(dash, 1)
         game_world.add_collision_pair('Dash:Crown', dash, None)
@@ -259,9 +273,10 @@ class Knight:
 
     def angel_skill(self):
         global angel_start_time, angel
-        if self.angel_mode == True: return
+        if self.angel_cooltime == True: return
         self.action = 1
         self.angel_mode = True
+        self.angel_cooltime = True
         angel = KnightAngel(self)
         game_world.add_object(angel, 2)
         game_world.add_collision_pair('Angel:Crown', angel, None)
