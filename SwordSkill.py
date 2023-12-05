@@ -48,4 +48,6 @@ class KnightSword:
         ]
 
     def handle_collision(self, group, other):
+        if group == 'Sword:Crown' or group == 'Sword:Girl' or group == 'Sword:Skull':
+            self.knight.Count += 0.5
         pass

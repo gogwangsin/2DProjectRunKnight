@@ -194,7 +194,7 @@ class Knight:
 
         self.HP = 100
         self.HP_decrease = 0.03  # 0.03
-        self.Coin = 0
+        self.Coin, self.Count = 0, 0
         self.live, self.dash_mode, self.angel_mode, self.sword_mode, self.heal_mode = True, False, False, False, False
         self.bounding_box_list = []
         self.action = 0

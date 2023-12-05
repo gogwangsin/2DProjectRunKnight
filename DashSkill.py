@@ -50,4 +50,6 @@ class KnightDash:
         ]
 
     def handle_collision(self, group, other):
+        if group == 'Dash:Crown' or group == 'Dash:Girl' or group == 'Dash:Skull':
+            self.knight.Count += 1
         pass
