@@ -1,5 +1,5 @@
 from pico2d import clear_canvas, update_canvas, get_events, load_image
-from sdl2 import SDL_QUIT, SDL_KEYDOWN, SDLK_ESCAPE, SDLK_r, SDL_MOUSEMOTION
+from sdl2 import SDL_QUIT, SDL_KEYDOWN, SDLK_ESCAPE, SDLK_r, SDL_MOUSEMOTION, SDL_MOUSEBUTTONDOWN, SDL_BUTTON_LEFT
 import game_framework
 import game_world
 import play_mode
@@ -8,6 +8,7 @@ from ResultPannel import ResultPannel
 
 mouse_x, mouse_y = -200, -200
 mouse_x_size, mouse_y_size = 97 * 0.9, 92 * 0.9
+
 
 def init():
     global result, cursor_image
@@ -43,8 +44,13 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_r:
             game_framework.pop_mode()
             game_framework.change_mode(play_mode)
+
         elif event.type == SDL_MOUSEMOTION:
             mouse_x, mouse_y = event.x, 800 - 1 - event.y
+            set_mouse_toggle(mouse_x, mouse_y)
+        if event.type == SDL_MOUSEBUTTONDOWN:
+            mouse_x, mouse_y = event.x, 800 - 1 - event.y
+            click_mouse_for_restart(mouse_x, mouse_y)
 
 
 def pause():
@@ -53,3 +59,22 @@ def pause():
 
 def resume():
     pass
+
+
+def set_mouse_toggle(m_x, m_y):
+    global result
+    if not result.mouse_toggle:
+        # 마우스가 ResultPannel에 restart_button 토글 꺼진 박스 크기 안에 있다면
+        if m_x >= 640 - 133.65 and m_x <= 640 + 133.65 and m_y >= 135 - 47.85 and m_y <= 135 + 47.85:
+            result.mouse_toggle = True
+    if m_x < 640 - 170.1 or m_x > 640 + 170.1 or m_y < 135 - 60.9 or m_y > 135 + 60.9:
+        result.mouse_toggle = False
+        # 사이즈 커진 범위 벗어나면 False
+
+
+def click_mouse_for_restart(m_x, m_y):
+    global result
+    if result.mouse_toggle:
+        if m_x >= 640 - 170.1 and m_x <= 640 + 170.1 and m_y >= 135 - 60.9 and m_y <= 135 + 60.9:
+            game_framework.pop_mode()
+            game_framework.change_mode(play_mode)

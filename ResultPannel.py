@@ -20,6 +20,7 @@ class ResultPannel:
         self.color = 225
         self.dis = play_mode.gui.DisPannel.get_distance()
         self.coin_num = play_mode.knight.Coin
+        self.mouse_toggle = False
 
     def draw(self):
         self.draw_result_menu()
@@ -49,6 +50,9 @@ class ResultPannel:
         self.result.clip_draw(0, 0, 500, 300, screen_half_width + 22, screen_height - 125, 500 * 1, 300 * 1)
 
     def draw_restart_menu(self):
-        self.restart_button.clip_draw(0, 0, 243, 87, screen_half_width, 135, 243 * 1.1, 87 * 1.1)
+        if not self.mouse_toggle:
+            self.restart_button.clip_draw(0, 0, 243, 87, screen_half_width, 135, 243 * 1.1, 87 * 1.1)
+        else:
+            self.restart_button.clip_draw(0, 0, 243, 87, screen_half_width, 135, 243 * 1.4, 87 * 1.4)
         self.restart.clip_draw(0, 0, 500, 300, screen_half_width + 13, screen_half_height - 285,
                                500 * 0.65, 300 * 0.65)
