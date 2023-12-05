@@ -7,6 +7,7 @@ import play_mode
 from MonsterAttackedEffect import MonsterAttacked
 from MonsterAttackedEffect2 import MonsterAttacked2
 from MonsterAttackedEffect3 import MonsterAttacked3
+from MonsterAttackedEffect4 import MonsterAttacked4
 
 
 def enemy_girl_add():
@@ -16,6 +17,7 @@ def enemy_girl_add():
         game_world.add_collision_pair('Knight:Girl', None, girl)
         game_world.add_collision_pair('Dash:Girl', None, girl)
         game_world.add_collision_pair('Sword:Girl', None, girl)
+        game_world.add_collision_pair('Angel:Girl', None, girl)
         play_mode.girl_start_time = time.time()
 
 
@@ -122,11 +124,13 @@ class EnemyRedGirl:
     def handle_collision(self, group, other):
         if self.is_valid and group == 'Knight:Girl':
             self.is_valid = False
-        elif self.is_valid and group == 'Dash:Girl':  # 처음 맞을 땐 -> 뒤로감 -> 두번째는 디짐
+
+        if self.is_valid and group == 'Dash:Girl':  # 처음 맞을 땐 -> 뒤로감 -> 두번째는 디짐
             attacked = MonsterAttacked3(self)
             game_world.add_object(attacked, 2)
             self.is_valid = False
             game_world.remove_object(self)
+
         if group == 'Sword:Girl':
             if self.is_valid:
                 attacked = MonsterAttacked2(self)
@@ -136,3 +140,9 @@ class EnemyRedGirl:
                 attacked = MonsterAttacked2(self)
                 game_world.add_object(attacked, 2)
                 game_world.remove_object(self)
+
+        if self.is_valid and group == 'Angel:Girl':  # 처음 맞을 땐 -> 뒤로감 -> 두번째는 디짐
+            attacked = MonsterAttacked4(self)
+            game_world.add_object(attacked, 2)
+            self.is_valid = False
+            game_world.remove_object(self)

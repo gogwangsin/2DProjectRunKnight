@@ -7,6 +7,7 @@ import play_mode
 from MonsterAttackedEffect import MonsterAttacked
 from MonsterAttackedEffect2 import MonsterAttacked2
 from MonsterAttackedEffect3 import MonsterAttacked3
+from MonsterAttackedEffect4 import MonsterAttacked4
 
 
 def enemy_skull_add():
@@ -16,6 +17,7 @@ def enemy_skull_add():
         game_world.add_collision_pair('Knight:Skull', None, skull)
         game_world.add_collision_pair('Dash:Skull', None, skull)
         game_world.add_collision_pair('Sword:Skull', None, skull)
+        game_world.add_collision_pair('Angel:Skull', None, skull)
         play_mode.skull_start_time = time.time()
 
 
@@ -124,11 +126,13 @@ class EnemySkull:
     def handle_collision(self, group, other):
         if self.is_valid and group == 'Knight:Skull':
             self.is_valid = False
-        elif self.is_valid and group == 'Dash:Skull':  # 처음 맞을 땐 -> 뒤로감 -> 두번째는 디
+
+        if self.is_valid and group == 'Dash:Skull':  # 처음 맞을 땐 -> 뒤로감 -> 두번째는 디
             attacked = MonsterAttacked3(self)
             game_world.add_object(attacked, 2)
             self.is_valid = False
             game_world.remove_object(self)
+
         if group == 'Sword:Skull':
             if self.is_valid:
                 attacked = MonsterAttacked2(self)
@@ -138,3 +142,9 @@ class EnemySkull:
                 attacked = MonsterAttacked2(self)
                 game_world.add_object(attacked, 2)
                 game_world.remove_object(self)
+
+        if self.is_valid and group == 'Angel:Skull':  # 처음 맞을 땐 -> 뒤로감 -> 두번째는 디짐
+            attacked = MonsterAttacked4(self)
+            game_world.add_object(attacked, 2)
+            self.is_valid = False
+            game_world.remove_object(self)

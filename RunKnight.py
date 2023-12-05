@@ -264,6 +264,9 @@ class Knight:
         self.angel_mode = True
         angel = KnightAngel(self)
         game_world.add_object(angel, 2)
+        game_world.add_collision_pair('Angel:Crown', angel, None)
+        game_world.add_collision_pair('Angel:Girl', angel, None)
+        game_world.add_collision_pair('Angel:Skull', angel, None)
         angel_start_time = time.time()
 
     def sword_skill(self):

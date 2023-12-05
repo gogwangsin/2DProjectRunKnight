@@ -7,6 +7,7 @@ import play_mode
 from MonsterAttackedEffect import MonsterAttacked
 from MonsterAttackedEffect2 import MonsterAttacked2
 from MonsterAttackedEffect3 import MonsterAttacked3
+from MonsterAttackedEffect4 import MonsterAttacked4
 
 
 def enemy_crown_add():
@@ -16,6 +17,7 @@ def enemy_crown_add():
         game_world.add_collision_pair('Knight:Crown', None, crown)
         game_world.add_collision_pair('Dash:Crown', None, crown)
         game_world.add_collision_pair('Sword:Crown', None, crown)
+        game_world.add_collision_pair('Angel:Crown', None, crown)
         play_mode.crown_start_time = time.time()
 
 
@@ -135,11 +137,13 @@ class EnemyCrown:
     def handle_collision(self, group, other):
         if self.is_valid and group == 'Knight:Crown':
             self.is_valid = False
-        elif self.is_valid and group == 'Dash:Crown':  # 처음 맞을 땐 -> 뒤로감 -> 두번째는 디짐
+
+        if self.is_valid and group == 'Dash:Crown':  # 처음 맞을 땐 -> 뒤로감 -> 두번째는 디짐
             attacked = MonsterAttacked3(self)
             game_world.add_object(attacked, 2)
             self.is_valid = False
             game_world.remove_object(self)
+
         if group == 'Sword:Crown':
             if self.is_valid:
                 attacked = MonsterAttacked2(self)
@@ -149,3 +153,9 @@ class EnemyCrown:
                 attacked = MonsterAttacked2(self)
                 game_world.add_object(attacked, 2)
                 game_world.remove_object(self)
+
+        if self.is_valid and group == 'Angel:Crown':  # 처음 맞을 땐 -> 뒤로감 -> 두번째는 디짐
+            attacked = MonsterAttacked4(self)
+            game_world.add_object(attacked, 2)
+            self.is_valid = False
+            game_world.remove_object(self)
