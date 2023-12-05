@@ -263,7 +263,7 @@ class Knight:
 
     def dash_skill(self):
         global dash_start_time, dash
-        if self.dash_cooltime == True: return
+        if self.dash_mode == True: return
         self.action = 1
         self.dash_mode = True
         self.dash_cooltime = True
@@ -276,7 +276,7 @@ class Knight:
 
     def angel_skill(self):
         global angel_start_time, angel
-        if self.angel_cooltime == True: return
+        if self.angel_mode == True: return
         self.action = 1
         self.angel_mode = True
         self.angel_cooltime = True
