@@ -1,7 +1,7 @@
 import time
 import random
 from pico2d import load_image, draw_rectangle
-from sdl2 import SDL_KEYDOWN, SDLK_LEFT, SDL_KEYUP, SDLK_RIGHT, SDLK_e, SDLK_r, SDLK_w
+from sdl2 import SDL_KEYDOWN, SDLK_LEFT, SDL_KEYUP, SDLK_RIGHT, SDLK_e, SDLK_r, SDLK_w, SDLK_UP, SDLK_DOWN
 import game_framework
 import game_world
 import over_mode
@@ -11,7 +11,25 @@ from AttackedEffect import Attacked
 from DashSkill import KnightDash
 from HealingMotion import KnightHealing
 from SwordSkill import KnightSword
+
+
 # 용사 객체
+
+def up_down(event):
+    return event[0] == 'INPUT' and event[1].type == SDL_KEYDOWN and event[1].key == SDLK_UP
+
+
+def up_up(event):
+    return event[0] == 'INPUT' and event[1].type == SDL_KEYUP and event[1].key == SDLK_UP
+
+
+def down_down(event):
+    return event[0] == 'INPUT' and event[1].type == SDL_KEYDOWN and event[1].key == SDLK_DOWN
+
+
+def down_up(event):
+    return event[0] == 'INPUT' and event[1].type == SDL_KEYUP and event[1].key == SDLK_DOWN
+
 
 def left_down(event):
     return event[0] == 'INPUT' and event[1].type == SDL_KEYDOWN and event[1].key == SDLK_LEFT
@@ -63,15 +81,14 @@ class Run:
     @staticmethod
     def entry(knight, event):
         # 키 flag : 한번 눌렀을 때 방향 정해짐
-        if left_down(event):
+        if left_down(event) or up_down(event):
             knight.Dir += 1
-        elif right_down(event):
+        elif right_down(event) or down_down(event):
             knight.Dir -= 1
-        elif left_up(event):
+        elif left_up(event) or up_up(event):
             knight.Dir -= 1
-        elif right_up(event):
+        elif right_up(event) or down_up(event):
             knight.Dir += 1
-
 
     @staticmethod
     def exit(knight, event):
@@ -82,7 +99,7 @@ class Run:
         elif knight.dash_mode and dash_time_out(event):
             if knight.dash_cooltime:
                 dash.remove()
-                knight.dash_cooltime = False # 한번만 삭제하기
+                knight.dash_cooltime = False  # 한번만 삭제하기
 
         if r_down(event):
             knight.angel_skill()
@@ -106,19 +123,20 @@ class Run:
             knight.sweat_frame = (knight.sweat_frame + knight.sweat_frames_per_action *
                                   knight.sweat_action_per_time * game_framework.frame_time) % 3
 
-        knight.frame = (knight.frame + knight.frames_per_action * knight.action_per_time * game_framework.frame_time) %3
+        knight.frame = (
+                                   knight.frame + knight.frames_per_action * knight.action_per_time * game_framework.frame_time) % 3
         if 700 >= knight.draw_y + knight.Dir * knight.walk_pixel_per_second * game_framework.frame_time >= 80:
             knight.draw_y += knight.Dir * knight.walk_pixel_per_second * game_framework.frame_time
             knight.layer_y = knight.draw_y - 80
 
         if knight.dash_mode:
-            if game_framework.current_time - dash_start_time >= 8.0: # 8초 되면 다시 가능
+            if game_framework.current_time - dash_start_time >= 8.0:  # 8초 되면 다시 가능
                 knight.dash_mode = False
             elif game_framework.current_time - dash_start_time >= 4.0:
                 knight.state_machine.handle_event(('TIME_OUT', 4.0))
 
         if knight.angel_mode:
-            if game_framework.current_time - angel_start_time >= 12.0: # 12초 되면 다시 가능
+            if game_framework.current_time - angel_start_time >= 12.0:  # 12초 되면 다시 가능
                 knight.angel_mode = False
             elif game_framework.current_time - angel_start_time >= 6.0:
                 knight.state_machine.handle_event(('TIME_OUT', 6.0))
@@ -145,6 +163,7 @@ class StateMachine:
         # 상태 전환 테이블
         self.transitions = {
             Run: {left_down: Run, left_up: Run, right_down: Run, right_up: Run,
+                  up_down: Run, up_up: Run, down_down: Run, down_up: Run,
                   e_down: Run, dash_time_out: Run, r_down: Run, angel_time_out: Run, w_down: Run,
                   heal_time_out: Run}
         }
@@ -238,7 +257,6 @@ class Knight:
 
     def get_bounding_box(self):
         return self.bounding_box_list
-
 
     def update_hp(self):
         if self.HP <= 0:
